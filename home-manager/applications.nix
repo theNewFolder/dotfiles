@@ -25,7 +25,7 @@
     python3
     python3Packages.pip
     python3Packages.virtualenv
-    python3Packages.poetry
+    poetry  # Python package manager
     nodejs
     nodePackages.npm
     nodePackages.yarn
