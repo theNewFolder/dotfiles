@@ -6,7 +6,7 @@
   home.packages = with pkgs; [
     # GPU monitoring
     nvtopPackages.nvidia
-    glxinfo
+    mesa-demos  # Provides glxinfo and glxgears
     vulkan-tools
   ];
 

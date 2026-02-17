@@ -93,7 +93,7 @@
     libva-utils  # VA-API verification
     vdpauinfo  # VDPAU info
     vulkan-tools  # Vulkan utilities
-    glxinfo  # OpenGL info
+    mesa-demos  # OpenGL info (glxinfo, glxgears)
 
     # GPU overclocking (optional)
     # nvidia-overclocking-tool  # If available
