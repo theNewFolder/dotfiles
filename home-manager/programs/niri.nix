@@ -50,61 +50,67 @@
 
     // ===== Layout =====
     layout {
-        gaps 16  // Larger gaps for better aesthetics
-        center-focused-column "never"
+        gaps 20  // Generous gaps for eye candy
+        center-focused-column "on-overflow"  // Center when space available
 
+        // More flexible preset widths
         preset-column-widths {
-            proportion 0.33333
-            proportion 0.5
-            proportion 0.66667
+            proportion 0.25    // Quarter screen
+            proportion 0.33333 // Third
+            proportion 0.5     // Half
+            proportion 0.66667 // Two thirds
+            proportion 0.75    // Three quarters
         }
 
         default-column-width { proportion 0.5; }
 
-        // Vibrant focus ring with gradient
+        // Ultra-vibrant focus ring with animated gradient
         focus-ring {
-            width 4  // Thicker for visibility
-            active-color "${colorScheme.bright_yellow}"  // Bright yellow
-            inactive-color "${colorScheme.bg3}"
+            width 5  // Extra thick for maximum visibility
+            active-color "${colorScheme.bright_yellow}"
+            inactive-color "${colorScheme.bg2}"
 
-            // Gradient effect
+            // Multi-color gradient for eye candy
             active-gradient {
                 from "${colorScheme.bright_yellow}"
                 to "${colorScheme.bright_orange}"
-                angle 45
+                angle 90
+                relative-to "window"
             }
         }
 
-        // Vibrant borders
+        // Enhanced borders with glow effect
         border {
-            width 3
+            width 4
             active-color "${colorScheme.bright_yellow}"
             inactive-color "${colorScheme.bg3}"
 
-            // Gradient for active border
+            // Dynamic gradient
             active-gradient {
-                from "${colorScheme.bright_yellow}"
+                from "${colorScheme.bright_aqua}"
+                via "${colorScheme.bright_yellow}"
                 to "${colorScheme.bright_orange}"
-                angle 45
+                angle 135
+                relative-to "workspace-view"
             }
         }
 
-        // Struts (reserved space around screen edges)
+        // Struts for waybar/panels
         struts {
             left 0
             right 0
-            top 0
+            top 48  // Reserve space for waybar
             bottom 0
         }
 
-        // Window shadows for depth
+        // Enhanced shadows for maximum depth
         shadow {
             on
-            blur-sigma 12.0  // Softness/blur radius
-            color "#00000080"  // Semi-transparent black
+            blur-sigma 20.0  // Larger blur for softer shadows
+            color "#00000099"  // Darker shadow
             offset-x 0
-            offset-y 4  // Drop shadow effect
-            spread 0
+            offset-y 8  // Deeper drop shadow
+            spread -4  // Negative spread for tighter shadow
         }
     }
 
@@ -121,76 +127,203 @@
 
     // ===== Window Rules =====
 
-    // Global window rules - rounded corners and shadows
+    // Global defaults - maximum eye candy
     window-rule {
-        // Apply to all windows
-        geometry-corner-radius 12
+        geometry-corner-radius 16  // Extra rounded
         clip-to-geometry true
-
-        // Drop shadows
         draw-border-with-background false
-
-        // Prefer server-side decorations for better integration
         prefer-no-csd
+
+        // Subtle opacity for unfocused windows
+        opacity 0.98
     }
 
-    // Firefox - larger default width
+    // ===== Browsers =====
     window-rule {
         match app-id="firefox"
         default-column-width { proportion 0.75; }
-        geometry-corner-radius 12
-        clip-to-geometry true
+        geometry-corner-radius 16
+        open-on-workspace 2  // Browsers on workspace 2
     }
 
-    // Emacs - coding-friendly width
+    window-rule {
+        match app-id="chromium"
+        default-column-width { proportion 0.75; }
+        geometry-corner-radius 16
+        open-on-workspace 2
+    }
+
+    // ===== Editors & IDEs =====
     window-rule {
         match app-id="emacs"
         default-column-width { proportion 0.66667; }
-        geometry-corner-radius 12
-        clip-to-geometry true
+        geometry-corner-radius 16
+        open-on-workspace 1  // Coding on workspace 1
+        opacity 1.0  // Full opacity for text editing
     }
 
-    // Terminal windows - slightly smaller
+    window-rule {
+        match app-id="code"
+        default-column-width { proportion 0.75; }
+        geometry-corner-radius 16
+        open-on-workspace 1
+    }
+
+    window-rule {
+        match app-id="neovide"
+        default-column-width { proportion 0.66667; }
+        geometry-corner-radius 16
+        open-on-workspace 1
+    }
+
+    // ===== Terminals =====
     window-rule {
         match app-id="foot"
         default-column-width { proportion 0.5; }
-        geometry-corner-radius 12
-        clip-to-geometry true
+        geometry-corner-radius 16
+        opacity 0.95  // Slight transparency for style
     }
 
     window-rule {
         match app-id="kitty"
         default-column-width { proportion 0.5; }
-        geometry-corner-radius 12
+        geometry-corner-radius 16
+        opacity 0.95
+    }
+
+    window-rule {
+        match app-id="wezterm"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+        opacity 0.95
+    }
+
+    window-rule {
+        match app-id="Alacritty"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+        opacity 0.95
+    }
+
+    // ===== File Managers =====
+    window-rule {
+        match app-id="org.gnome.Nautilus"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+    }
+
+    window-rule {
+        match app-id="thunar"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+    }
+
+    window-rule {
+        match app-id="pcmanfm"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+    }
+
+    // ===== Media Players =====
+    window-rule {
+        match app-id="mpv"
+        default-column-width { proportion 0.66667; }
+        geometry-corner-radius 20  // Extra rounded for media
+        open-on-workspace 4  // Media on workspace 4
+        block-out-from "screen-capture"  // Privacy for media
+    }
+
+    window-rule {
+        match app-id="vlc"
+        default-column-width { proportion 0.66667; }
+        geometry-corner-radius 20
+        open-on-workspace 4
+    }
+
+    // ===== Communication =====
+    window-rule {
+        match app-id="discord"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+        open-on-workspace 3  // Chat on workspace 3
+    }
+
+    window-rule {
+        match app-id="slack"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+        open-on-workspace 3
+    }
+
+    window-rule {
+        match app-id="Element"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+        open-on-workspace 3
+    }
+
+    // ===== System Tools =====
+    window-rule {
+        match app-id="bluetuith"
+        default-column-width { proportion 0.33333; }
+        geometry-corner-radius 16
+    }
+
+    window-rule {
+        match app-id="pavucontrol"
+        default-column-width { proportion 0.33333; }
+        geometry-corner-radius 16
+    }
+
+    window-rule {
+        match app-id="btop"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 16
+    }
+
+    // ===== Floating Windows =====
+    window-rule {
+        match is-floating=true
+        geometry-corner-radius 20  // Extra rounded for popups
         clip-to-geometry true
     }
 
-    // Floating windows (dialogs, popups)
+    // Dialogs and transient windows
     window-rule {
-        match is-floating=true
-        geometry-corner-radius 16
-        clip-to-geometry true
+        match is-dialog=true
+        geometry-corner-radius 20
+        default-column-width { proportion 0.33333; }
+    }
+
+    // Picture-in-picture
+    window-rule {
+        match title="Picture-in-Picture"
+        geometry-corner-radius 24
+        min-width 400
+        min-height 300
     }
 
     // ===== Keybindings =====
     binds {
-        // Mod key (Super/Windows key)
-        Mod+Return { spawn "foot"; }
-        Mod+Shift+Return { spawn "kitty"; }
-        Mod+D { spawn "fuzzel"; }
-        Mod+Q { close-window; }
+        // ===== Application Launchers =====
+        Mod+Return { spawn "foot"; }  // Primary terminal
+        Mod+Shift+Return { spawn "kitty"; }  // Alt terminal
+        Mod+D { spawn "fuzzel"; }  // App launcher
+        Mod+Space { spawn "fuzzel"; }  // Alt app launcher
+        Mod+Q { close-window; }  // Close window
 
-        // Emacs
-        Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }
-        Mod+Shift+E { spawn "emacsclient" "-t" "-a" "emacs"; }
+        // ===== Quick Launch Apps =====
+        Mod+B { spawn "firefox"; }  // Browser
+        Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }  // Emacs GUI
+        Mod+Shift+E { spawn "emacsclient" "-t" "-a" "emacs"; }  // Emacs terminal
+        Mod+T { spawn "thunar"; }  // File manager
+        Mod+M { spawn "foot" "-e" "btop"; }  // System monitor
 
-        // Org shortcuts (open emacs with org commands)
-        Mod+C { spawn "emacsclient" "-c" "-e" "(org-capture)"; }
-        Mod+A { spawn "emacsclient" "-c" "-e" "(org-agenda)"; }
-        Mod+N { spawn "emacsclient" "-c" "-e" "(org-roam-node-find)"; }
-
-        // Firefox
-        Mod+B { spawn "firefox"; }
+        // ===== Emacs Org-mode Integration =====
+        Mod+C { spawn "emacsclient" "-c" "-e" "(org-capture)"; }  // Quick capture
+        Mod+A { spawn "emacsclient" "-c" "-e" "(org-agenda)"; }  // Agenda
+        Mod+N { spawn "emacsclient" "-c" "-e" "(org-roam-node-find)"; }  // Org-roam
+        Mod+Shift+N { spawn "emacsclient" "-c" "-e" "(org-roam-dailies-capture-today)"; }  // Daily note
 
         // Focus movement (Vim-style)
         Mod+H { focus-column-left; }
@@ -247,13 +380,71 @@
         Mod+Shift+Comma { move-column-to-monitor-left; }
         Mod+Shift+Period { move-column-to-monitor-right; }
 
-        // Screenshots
-        Print { spawn "grim" "-g" "$(slurp)" "~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
-        Mod+Print { spawn "grim" "~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
+        // ===== Screenshots & Screen Recording =====
+        Print { spawn "grim" "-g" "$(slurp)" "~/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png"; }  // Area
+        Mod+Print { spawn "grim" "~/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png"; }  // Full screen
+        Shift+Print { spawn "grim" "-g" "$(slurp)" "-" "|" "swappy" "-f" "-"; }  // Area + edit
+        Ctrl+Print { spawn "grim" "-g" "$(slurp)" "-" "|" "wl-copy"; }  // Area to clipboard
+        Mod+Shift+Print { spawn "grim" "-" "|" "wl-copy"; }  // Full to clipboard
 
-        // System
-        Mod+Shift+Q { quit; }
-        Mod+Shift+P { power-off-monitors; }
+        // Screen recording
+        Mod+Ctrl+R { spawn "wf-recorder" "-g" "$(slurp)" "-f" "~/Videos/recording-$(date +%Y%m%d-%H%M%S).mp4"; }
+
+        // ===== Audio Controls =====
+        XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+        XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+        XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+        XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+        // Alt audio controls (for keyboards without media keys)
+        Mod+Plus { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+        Mod+Minus { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+        Mod+0 { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+
+        // Media player controls
+        XF86AudioPlay { spawn "playerctl" "play-pause"; }
+        XF86AudioPause { spawn "playerctl" "pause"; }
+        XF86AudioNext { spawn "playerctl" "next"; }
+        XF86AudioPrev { spawn "playerctl" "previous"; }
+        Mod+P { spawn "playerctl" "play-pause"; }  // Alt media control
+
+        // ===== Brightness Controls =====
+        XF86MonBrightnessUp { spawn "brightnessctl" "set" "10%+"; }
+        XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
+        Mod+BracketRight { spawn "brightnessctl" "set" "10%+"; }  // Alt brightness
+        Mod+BracketLeft { spawn "brightnessctl" "set" "10%-"; }
+
+        // ===== Quick Utilities =====
+        Mod+V { spawn "cliphist" "list" "|" "fuzzel" "-d" "|" "cliphist" "decode" "|" "wl-copy"; }  // Clipboard history
+        Mod+Shift+V { spawn "foot" "-e" "bluetuith"; }  // Bluetooth manager
+        Mod+X { spawn "fuzzel" "-d"; }  // Alt launcher
+        Mod+Shift+D { spawn "wdisplays"; }  // Display settings
+        Mod+Shift+A { spawn "pavucontrol"; }  // Audio settings
+
+        // ===== Window Management Enhancements =====
+        Mod+Tab { focus-column-right; }  // Quick window switch
+        Mod+Shift+Tab { focus-column-left; }  // Reverse switch
+        Mod+Grave { focus-workspace-previous; }  // Previous workspace
+        Mod+Shift+Grave { move-column-to-workspace-previous; }  // Move to previous WS
+
+        // Consume window (remove from layout)
+        Mod+Ctrl+H { consume-or-expel-window-left; }
+        Mod+Ctrl+L { consume-or-expel-window-right; }
+
+        // Center column
+        Mod+Shift+C { center-column; }
+
+        // ===== System Controls =====
+        Mod+Shift+Q { quit; }  // Quit niri
+        Mod+Shift+P { power-off-monitors; }  // Power off monitors
+        Mod+Shift+R { spawn "niri" "msg" "reload-config"; }  // Reload config
+        Mod+Escape { spawn "niri" "msg" "reload-config"; }  // Alt reload
+
+        // Lock screen (assuming swaylock)
+        Mod+Shift+L { spawn "swaylock"; }
+
+        // Power menu (custom script or rofi/fuzzel based)
+        Mod+Shift+Escape { spawn "fuzzel-power-menu"; }
     }
 
     // ===== Cursor =====
@@ -278,56 +469,94 @@
         GRUVBOX_FG "${colorScheme.fg}"
     }
 
-    // ===== Animations =====
+    // ===== Animations - Maximum Eye Candy =====
     animations {
-        slowdown 0.7  // Faster for snappier feel
+        // Slower = more eye candy, faster = snappier
+        slowdown 1.0  // Balanced for smooth visuals
 
+        // Window opening - spring effect for bounce
         window-open {
+            duration-ms 250
+            curve "ease-out-back"  // Overshoot for bounce effect
+        }
+
+        // Window closing - quick fade
+        window-close {
             duration-ms 180
+            curve "ease-in-cubic"
+        }
+
+        // Workspace switching - smooth glide
+        workspace-switch {
+            duration-ms 280
+            curve "ease-in-out-cubic"
+        }
+
+        // Window movement - physics-based
+        window-movement {
+            duration-ms 200
             curve "ease-out-expo"
         }
 
-        window-close {
-            duration-ms 120
-            curve "ease-in-expo"
-        }
-
-        workspace-switch {
-            duration-ms 200
-            curve "ease-in-out-expo"
-        }
-
-        window-movement {
-            duration-ms 120
-            curve "ease-out-cubic"
-        }
-
+        // Window resize - smooth elastic
         window-resize {
-            duration-ms 120
+            duration-ms 200
             curve "ease-out-cubic"
         }
 
+        // Horizontal view movement (scrolling workspaces)
+        horizontal-view-movement {
+            duration-ms 300
+            curve "ease-in-out-cubic"
+        }
+
+        // Window focus change
+        window-focus-change {
+            duration-ms 150
+            curve "ease-out-quad"
+        }
+
+        // Config notifications
         config-notification-open-close {
-            off
+            duration-ms 200
+            curve "ease-out-cubic"
         }
     }
 
     // ===== Performance Optimizations =====
     prefer-no-csd
 
+    // Render settings for best quality
+    // (Note: These may not be available in all niri versions)
+
     // ===== Screenshot =====
     screenshot-path "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png"
 
     // ===== Background (Wallpaper) =====
-    // Using swaybg for wallpaper
+    // Using swaybg for wallpaper with smooth transitions
     spawn-at-startup "swaybg" "-i" "$HOME/Pictures/Wallpapers/gruvbox-current.png" "-m" "fill"
 
-    // ===== Startup =====
+    // ===== Startup Applications =====
+    // Status bar
     spawn-at-startup "waybar"
+
+    // Notifications
     spawn-at-startup "mako"
 
-    // Gamma/Night light
-    spawn-at-startup "wlsunset" "-l" "25" "-L" "55"  // Adjust for Dubai
+    // Clipboard manager (for Mod+V)
+    spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+
+    // Gamma/Night light (Dubai coordinates)
+    spawn-at-startup "wlsunset" "-l" "25" "-L" "55"
+
+    // Idle management (lock after 10 min, screen off after 15)
+    spawn-at-startup "swayidle" "-w" "timeout" "600" "swaylock" "timeout" "900" "niri" "msg" "action" "power-off-monitors"
+
+    // Authentication agent for GUI apps
+    spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
+
+    // Network manager applet
+    spawn-at-startup "nm-applet" "--indicator"
   '';
 
   # Waybar configuration for niri
