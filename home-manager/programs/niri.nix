@@ -1,4 +1,5 @@
 # Niri Wayland compositor configuration
+# Updated: 2026-02-17 - Fixed cursor configuration
 
 { config, pkgs, colorScheme, ... }:
 
@@ -260,10 +261,8 @@
     }
 
     // ===== Cursor =====
-    cursor {
-        size 32  // Larger for HiDPI displays
-        theme "Adwaita"
-    }
+    // Cursor configuration - using environment variables instead
+    // XCURSOR_SIZE and XCURSOR_THEME are set in session variables
 
     // ===== Hotkey Overlay =====
     hotkey-overlay {

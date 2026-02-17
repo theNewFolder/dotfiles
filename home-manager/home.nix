@@ -77,7 +77,7 @@
 
     # ===== Development Tools =====
     # Languages
-    nodejs
+    # nodejs - provided by mcp-servers.nix
     python3
     rustc
     cargo
@@ -108,7 +108,7 @@
     # ===== Learning & Documentation =====
     man-pages
     man-pages-posix
-    tldr      # Simplified man pages
+    # tldr - using tealdeer instead (faster Rust implementation)
     tealdeer  # Fast tldr (Rust)
     cheat     # Cheatsheets for CLI
 

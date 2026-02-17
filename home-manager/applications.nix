@@ -26,9 +26,7 @@
     python3Packages.pip
     python3Packages.virtualenv
     poetry  # Python package manager
-    nodejs
-    nodePackages.npm
-    nodePackages.yarn
+    # nodejs, npm, yarn - all provided by mcp-servers.nix
     go
     rustup
 
@@ -52,7 +50,7 @@
     # Productivity
     tmux        # Terminal multiplexer
     zellij      # Modern tmux alternative
-    tldr        # Simplified man pages
+    # tldr - using tealdeer instead (faster)
     cheat       # Cheatsheets
     tealdeer    # Fast tldr client
 
