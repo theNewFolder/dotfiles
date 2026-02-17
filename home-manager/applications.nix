@@ -202,7 +202,7 @@
     # ===== Learning & Documentation =====
     man-pages
     man-pages-posix
-    tldr-pages
+    # tldr-pages already included via tealdeer
 
     # ===== Gaming Performance =====
     gamemode    # Optimize system for gaming
