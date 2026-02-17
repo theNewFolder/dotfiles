@@ -9,9 +9,9 @@
     settings = {
       main = {
         term = "xterm-256color";
-        font = "JetBrainsMono Nerd Font:size=11";
+        font = "JetBrainsMono Nerd Font:size=12";  # Larger for HiDPI
         dpi-aware = "yes";
-        pad = "10x10";  # Padding for aesthetics
+        pad = "12x12";  # More padding for HiDPI aesthetics
       };
 
       cursor = {

@@ -6,51 +6,51 @@
 let
   # Define color scheme as a local attribute set
   colorScheme = rec {
-    name = "Gruvbox Dark";
+    name = "Gruvbox Dark - Vibrant";
 
-    # Background colors
-    bg = "#282828";
-    bg0 = "#282828";
-    bg1 = "#3c3836";
-    bg2 = "#504945";
-    bg3 = "#665c54";
-    bg4 = "#7c6f64";
+    # Background colors - Darker and richer
+    bg = "#1d2021";      # Darker base (was #282828)
+    bg0 = "#1d2021";     # Darker base
+    bg1 = "#282828";     # Darker than original bg1
+    bg2 = "#3c3836";     # Shifted darker
+    bg3 = "#504945";     # Shifted darker
+    bg4 = "#665c54";     # Shifted darker
 
-    # Foreground colors
-    fg = "#ebdbb2";
-    fg0 = "#fbf1c7";
-    fg1 = "#ebdbb2";
-    fg2 = "#d5c4a1";
-    fg3 = "#bdae93";
-    fg4 = "#a89984";
+    # Foreground colors - Brighter and more vibrant
+    fg = "#fbf1c7";      # Brighter (was #ebdbb2)
+    fg0 = "#fffbdd";     # Even brighter
+    fg1 = "#fbf1c7";     # Bright cream
+    fg2 = "#ebdbb2";     # Warm white
+    fg3 = "#d5c4a1";     # Lighter tan
+    fg4 = "#bdae93";     # Medium tan
 
-    # Colors
-    red = "#cc241d";
-    green = "#98971a";
-    yellow = "#d79921";
-    blue = "#458588";
-    purple = "#b16286";
-    aqua = "#689d6a";
-    orange = "#d65d0e";
-    gray = "#928374";
+    # Colors - More saturated and vibrant
+    red = "#d42020";       # More saturated red
+    green = "#a8b020";     # More vibrant green
+    yellow = "#e8a50e";    # More saturated yellow
+    blue = "#4f96c8";      # More vibrant blue
+    purple = "#c8509b";    # More saturated purple
+    aqua = "#70b060";      # More vibrant aqua
+    orange = "#e86420";    # More saturated orange
+    gray = "#a09080";      # Warmer gray
 
-    # Bright variants
-    bright_red = "#fb4934";
-    bright_green = "#b8bb26";
-    bright_yellow = "#fabd2f";
-    bright_blue = "#83a598";
-    bright_purple = "#d3869b";
-    bright_aqua = "#8ec07c";
-    bright_orange = "#fe8019";
+    # Bright variants - Extra vibrant
+    bright_red = "#ff5050";      # Super vibrant red
+    bright_green = "#d0f020";    # Neon green
+    bright_yellow = "#ffd040";   # Golden yellow
+    bright_blue = "#60c0ff";     # Sky blue
+    bright_purple = "#ff60d0";   # Hot pink
+    bright_aqua = "#60ff90";     # Mint green
+    bright_orange = "#ff9030";   # Bright orange
 
-    # Dim variants
-    dim_red = "#9d0006";
-    dim_green = "#79740e";
-    dim_yellow = "#b57614";
-    dim_blue = "#076678";
-    dim_purple = "#8f3f71";
-    dim_aqua = "#427b58";
-    dim_orange = "#af3a03";
+    # Dim variants - Still visible but darker
+    dim_red = "#801010";
+    dim_green = "#606010";
+    dim_yellow = "#806010";
+    dim_blue = "#104060";
+    dim_purple = "#603050";
+    dim_aqua = "#206040";
+    dim_orange = "#803010";
   };
 in {
   # Export as config option for use in other modules

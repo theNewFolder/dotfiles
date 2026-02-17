@@ -33,21 +33,27 @@
     }
 
     // ===== Output =====
+    // External 4K HiDPI monitor
     output "HDMI-A-1" {
         mode "3840x2560@50"
-        scale 1.0
+        scale 1.5  // HiDPI scaling for comfortable viewing
         position x=0 y=0
+        transform "normal"
+        variable-refresh-rate on  // Enable VRR if supported
     }
 
+    // Laptop display
     output "eDP-1" {
         mode "1920x1080@144"
-        scale 1.0
-        position x=3840 y=0
+        scale 1.0  // Standard DPI
+        position x=2560 y=0  // Position adjusted for scaled primary display (3840/1.5=2560)
+        transform "normal"
+        variable-refresh-rate on
     }
 
     // ===== Layout =====
     layout {
-        gaps 12  // Larger gaps for better aesthetics
+        gaps 16  // Larger gaps for better aesthetics
         center-focused-column "never"
 
         preset-column-widths {
@@ -58,13 +64,13 @@
 
         default-column-width { proportion 0.5; }
 
-        // Vibrant focus ring
+        // Vibrant focus ring with gradient
         focus-ring {
             width 4  // Thicker for visibility
             active-color "${colorScheme.bright_yellow}"  // Bright yellow
             inactive-color "${colorScheme.bg3}"
 
-            // Gradient effect (if supported)
+            // Gradient effect
             active-gradient {
                 from "${colorScheme.bright_yellow}"
                 to "${colorScheme.bright_orange}"
@@ -77,6 +83,31 @@
             width 3
             active-color "${colorScheme.bright_yellow}"
             inactive-color "${colorScheme.bg3}"
+
+            // Gradient for active border
+            active-gradient {
+                from "${colorScheme.bright_yellow}"
+                to "${colorScheme.bright_orange}"
+                angle 45
+            }
+        }
+
+        // Struts (reserved space around screen edges)
+        struts {
+            left 0
+            right 0
+            top 0
+            bottom 0
+        }
+
+        // Window shadows for depth
+        shadow {
+            on
+            blur-sigma 12.0  // Softness/blur radius
+            color "#00000080"  // Semi-transparent black
+            offset-x 0
+            offset-y 4  // Drop shadow effect
+            spread 0
         }
     }
 
@@ -92,20 +123,62 @@
     workspace "9"
 
     // ===== Window Rules =====
+
+    // Global window rules - rounded corners and shadows
+    window-rule {
+        // Apply to all windows
+        geometry-corner-radius 12
+        clip-to-geometry true
+
+        // Drop shadows
+        draw-border-with-background false
+
+        // Prefer server-side decorations for better integration
+        prefer-no-csd
+    }
+
+    // Firefox - larger default width
     window-rule {
         match app-id="firefox"
         default-column-width { proportion 0.75; }
+        geometry-corner-radius 12
+        clip-to-geometry true
     }
 
+    // Emacs - coding-friendly width
     window-rule {
         match app-id="emacs"
         default-column-width { proportion 0.66667; }
+        geometry-corner-radius 12
+        clip-to-geometry true
+    }
+
+    // Terminal windows - slightly smaller
+    window-rule {
+        match app-id="foot"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 12
+        clip-to-geometry true
+    }
+
+    window-rule {
+        match app-id="kitty"
+        default-column-width { proportion 0.5; }
+        geometry-corner-radius 12
+        clip-to-geometry true
+    }
+
+    // Floating windows (dialogs, popups)
+    window-rule {
+        match is-floating=true
+        geometry-corner-radius 16
+        clip-to-geometry true
     }
 
     // ===== Keybindings =====
     binds {
         // Mod key (Super/Windows key)
-        Mod+Return { spawn "wezterm"; }
+        Mod+Return { spawn "foot"; }
         Mod+Shift+Return { spawn "kitty"; }
         Mod+D { spawn "fuzzel"; }
         Mod+Q { close-window; }
@@ -188,7 +261,13 @@
 
     // ===== Cursor =====
     cursor {
-        size 24
+        size 32  // Larger for HiDPI displays
+        theme "Adwaita"
+    }
+
+    // ===== Hotkey Overlay =====
+    hotkey-overlay {
+        skip-at-startup
     }
 
     // ===== Environment =====
@@ -206,33 +285,40 @@
 
     // ===== Animations =====
     animations {
-        slowdown 0.8  // Slightly faster for gaming feel
+        slowdown 0.7  // Faster for snappier feel
 
         window-open {
-            duration-ms 200
-            curve "ease-out-cubic"
+            duration-ms 180
+            curve "ease-out-expo"
         }
 
         window-close {
-            duration-ms 150
-            curve "ease-in-cubic"
+            duration-ms 120
+            curve "ease-in-expo"
         }
 
         workspace-switch {
-            duration-ms 250
-            curve "ease-in-out-cubic"
+            duration-ms 200
+            curve "ease-in-out-expo"
         }
 
         window-movement {
-            duration-ms 150
-            curve "ease-out-quad"
+            duration-ms 120
+            curve "ease-out-cubic"
         }
 
         window-resize {
-            duration-ms 150
-            curve "ease-out-quad"
+            duration-ms 120
+            curve "ease-out-cubic"
+        }
+
+        config-notification-open-close {
+            off
         }
     }
+
+    // ===== Performance Optimizations =====
+    prefer-no-csd
 
     // ===== Screenshot =====
     screenshot-path "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png"
@@ -256,87 +342,300 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 30;
+        height = 48;  # Taller for HiDPI
+        margin = "10 16 0 16";
+        spacing = 10;
 
         modules-left = [ "custom/niri-workspaces" "custom/niri-window" ];
         modules-center = [ "clock" ];
-        modules-right = [ "pulseaudio" "network" "cpu" "memory" "temperature" "battery" ];
+        modules-right = [ "tray" "idle_inhibitor" "pulseaudio" "network" "cpu" "memory" "temperature" "battery" ];
+
+        "custom/niri-workspaces" = {
+          exec = "niri msg --json workspaces | jq -r '.[] | .name' | tr '\n' ' '";
+          interval = 1;
+          format = "  {}";
+        };
+
+        "custom/niri-window" = {
+          exec = "niri msg --json focused-window | jq -r '.title // \"Desktop\"'";
+          interval = 1;
+          format = "  {}";
+          max-length = 50;
+        };
 
         clock = {
-          format = "{:%H:%M   %Y-%m-%d}";
+          format = "  {:%H:%M   %a %b %d}";
+          format-alt = "  {:%Y-%m-%d %H:%M:%S}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         };
 
         cpu = {
           format = "  {usage}%";
-          tooltip = false;
+          format-alt = "  {avg_frequency} GHz";
+          interval = 2;
+          tooltip = true;
         };
 
         memory = {
-          format = "  {}%";
+          format = "  {percentage}%";
+          format-alt = "  {used:0.1f}G / {total:0.1f}G";
+          interval = 2;
+          tooltip-format = "Used: {used:0.2f}GB\nAvailable: {avail:0.2f}GB\nTotal: {total:0.2f}GB";
         };
 
         temperature = {
           critical-threshold = 80;
           format = " {temperatureC}°C";
+          format-critical = " {temperatureC}°C";
+          interval = 2;
         };
 
         battery = {
           format = "{icon}  {capacity}%";
+          format-charging = "  {capacity}%";
+          format-plugged = "  {capacity}%";
           format-icons = [ "" "" "" "" "" ];
           states = {
             warning = 30;
             critical = 15;
           };
+          tooltip-format = "{timeTo}\nPower: {power}W";
         };
 
         network = {
-          format-wifi = "  {essid}";
+          format-wifi = "  {essid} ({signalStrength}%)";
           format-ethernet = "  {ifname}";
-          format-disconnected = "⚠  Disconnected";
+          format-disconnected = "  Disconnected";
+          tooltip-format = "{ifname}: {ipaddr}/{cidr}\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}";
+          interval = 2;
         };
 
         pulseaudio = {
           format = "{icon}  {volume}%";
-          format-muted = "  Muted";
+          format-muted = "  {volume}%";
           format-icons = {
+            headphone = "";
+            hands-free = "";
+            headset = "";
+            phone = "";
+            portable = "";
+            car = "";
             default = [ "" "" "" ];
           };
+          on-click = "pavucontrol";
+          tooltip-format = "{desc}\n{volume}%";
+        };
+
+        tray = {
+          icon-size = 18;
+          spacing = 8;
+        };
+
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "";
+          };
+          tooltip-format-activated = "Idle inhibitor: Active";
+          tooltip-format-deactivated = "Idle inhibitor: Inactive";
         };
       };
     };
 
     style = ''
       * {
-        font-family: "JetBrainsMono Nerd Font";
-        font-size: 13px;
+        font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free";
+        font-size: 15px;  # Larger for HiDPI
+        font-weight: 500;
         border: none;
         border-radius: 0;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
       }
 
       window#waybar {
-        background-color: ${colorScheme.bg};
+        background: transparent;
         color: ${colorScheme.fg};
       }
 
-      #custom-niri-workspaces, #custom-niri-window,
-      #clock, #cpu, #memory, #temperature, #battery, #network, #pulseaudio {
-        padding: 0 10px;
-        background-color: ${colorScheme.bg1};
+      /* Module styling with rounded corners and gradients */
+      #custom-niri-workspaces,
+      #custom-niri-window,
+      #clock,
+      #cpu,
+      #memory,
+      #temperature,
+      #battery,
+      #network,
+      #pulseaudio,
+      #tray,
+      #idle_inhibitor {
+        padding: 6px 16px;
+        margin: 4px 2px;
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
         color: ${colorScheme.fg};
-        margin: 2px 2px;
+        border-radius: 12px;
+        border: 2px solid ${colorScheme.bg3};
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
       }
 
-      #battery.warning {
-        color: ${colorScheme.yellow};
+      /* Hover effects */
+      #custom-niri-workspaces:hover,
+      #custom-niri-window:hover,
+      #clock:hover,
+      #cpu:hover,
+      #memory:hover,
+      #temperature:hover,
+      #battery:hover,
+      #network:hover,
+      #pulseaudio:hover,
+      #idle_inhibitor:hover {
+        background: linear-gradient(135deg, ${colorScheme.bg2} 0%, ${colorScheme.bg3} 100%);
+        border-color: ${colorScheme.bright_yellow};
+        box-shadow: 0 4px 12px rgba(250, 189, 47, 0.3);
+        transform: translateY(-1px);
       }
 
-      #battery.critical {
-        color: ${colorScheme.red};
+      /* Left modules - Workspace indicator with accent */
+      #custom-niri-workspaces {
+        background: linear-gradient(135deg, ${colorScheme.bright_yellow} 0%, ${colorScheme.yellow} 100%);
+        color: ${colorScheme.bg};
+        font-weight: bold;
+        border-color: ${colorScheme.bright_orange};
+      }
+
+      #custom-niri-window {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_blue};
+        font-style: italic;
+      }
+
+      /* Center - Clock with accent */
+      #clock {
+        background: linear-gradient(135deg, ${colorScheme.bright_blue} 0%, ${colorScheme.blue} 100%);
+        color: ${colorScheme.bg};
+        font-weight: bold;
+        padding: 6px 20px;
+        border-color: ${colorScheme.bright_aqua};
+      }
+
+      /* Right modules - System info */
+      #cpu {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_green};
+      }
+
+      #memory {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_aqua};
+      }
+
+      #temperature {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_purple};
       }
 
       #temperature.critical {
-        color: ${colorScheme.red};
+        background: linear-gradient(135deg, ${colorScheme.bright_red} 0%, ${colorScheme.red} 100%);
+        color: ${colorScheme.bg};
+        border-color: ${colorScheme.bright_orange};
+        animation: blink 1s linear infinite;
+      }
+
+      #battery {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_yellow};
+      }
+
+      #battery.charging {
+        background: linear-gradient(135deg, ${colorScheme.bright_green} 0%, ${colorScheme.green} 100%);
+        color: ${colorScheme.bg};
+      }
+
+      #battery.warning:not(.charging) {
+        background: linear-gradient(135deg, ${colorScheme.bright_orange} 0%, ${colorScheme.orange} 100%);
+        color: ${colorScheme.bg};
+        animation: blink 2s linear infinite;
+      }
+
+      #battery.critical:not(.charging) {
+        background: linear-gradient(135deg, ${colorScheme.bright_red} 0%, ${colorScheme.red} 100%);
+        color: ${colorScheme.bg};
+        border-color: ${colorScheme.bright_orange};
+        animation: blink 1s linear infinite;
+      }
+
+      #network {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_blue};
+      }
+
+      #network.disconnected {
+        background: linear-gradient(135deg, ${colorScheme.dim_red} 0%, ${colorScheme.red} 100%);
+        color: ${colorScheme.fg};
+      }
+
+      #pulseaudio {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.bright_purple};
+      }
+
+      #pulseaudio.muted {
+        background: linear-gradient(135deg, ${colorScheme.bg2} 0%, ${colorScheme.bg3} 100%);
+        color: ${colorScheme.gray};
+      }
+
+      #tray {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        padding: 6px 12px;
+      }
+
+      #tray > .passive {
+        opacity: 0.7;
+      }
+
+      #tray > .needs-attention {
+        background-color: ${colorScheme.bright_red};
+        border-radius: 8px;
+        animation: blink 1s linear infinite;
+      }
+
+      #idle_inhibitor {
+        background: linear-gradient(135deg, ${colorScheme.bg1} 0%, ${colorScheme.bg2} 100%);
+        color: ${colorScheme.fg4};
+      }
+
+      #idle_inhibitor.activated {
+        background: linear-gradient(135deg, ${colorScheme.bright_orange} 0%, ${colorScheme.orange} 100%);
+        color: ${colorScheme.bg};
+        border-color: ${colorScheme.bright_yellow};
+      }
+
+      /* Blink animation for critical states */
+      @keyframes blink {
+        0%, 49% {
+          opacity: 1.0;
+        }
+        50%, 100% {
+          opacity: 0.7;
+        }
+      }
+
+      /* Tooltip styling */
+      tooltip {
+        background: ${colorScheme.bg};
+        border: 2px solid ${colorScheme.bright_yellow};
+        border-radius: 12px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      tooltip label {
+        color: ${colorScheme.fg};
+        font-family: "JetBrainsMono Nerd Font";
       }
     '';
   };

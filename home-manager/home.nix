@@ -30,72 +30,134 @@
 
   # ===== Packages =====
   home.packages = with pkgs; [
-    # Terminal emulators
-    wezterm
-    kitty
-    foot
+    # ===== Terminal Emulators =====
+    foot      # Primary - minimal, fast, Wayland-native
+    kitty     # Backup - feature-rich when needed
 
-    # Modern CLI tools
-    ripgrep
-    fd
-    bat
-    eza
-    fzf
-    bottom
-    htop
-    dust
-    procs
-    tokei
-    hyperfine
-    delta
-    zoxide
+    # ===== Modern CLI Tools (Rust-based, fast) =====
+    ripgrep   # Fast grep alternative
+    fd        # Fast find alternative
+    bat       # Better cat with syntax highlighting
+    eza       # Better ls with colors
+    fzf       # Fuzzy finder
+    zoxide    # Smart cd
+    delta     # Better git diff
 
-    # File managers
-    yazi
-    ranger
+    # ===== File Management =====
+    yazi      # Modern terminal file manager (Rust)
+    ranger    # Python-based file manager
+    nnn       # Minimal, fast file manager
+    lf        # Simple terminal file manager (Go)
 
-    # Network tools
+    # ===== System Monitoring =====
+    btop      # Beautiful system monitor
+    bottom    # Cross-platform system monitor (Rust)
+    htop      # Classic process viewer
+    bandwhich # Network bandwidth monitor
+    procs     # Better ps (Rust)
+    dust      # Better du (Rust)
+
+    # ===== Network Tools =====
     wget
     curl
-    aria2
+    aria2     # Multi-threaded downloader
+    rsync     # File sync
 
-    # Archive tools
+    # ===== Archive Tools =====
     unzip
     p7zip
     unrar
+    zstd      # Fast compression
 
-    # Media
-    mpv
-    imv
-    ffmpeg
+    # ===== Media =====
+    mpv       # Minimal video player (suckless philosophy)
+    imv       # Minimal image viewer
+    ffmpeg    # Media manipulation
+    yt-dlp    # Download videos/audio
 
-    # Development
+    # ===== Development Tools =====
+    # Languages
     nodejs
     python3
     rustc
     cargo
+    go
+    gcc
+    clang
+
+    # Version Control
+    git
+    lazygit   # Terminal UI for git
+    gh        # GitHub CLI
+
+    # Editors & IDEs
+    neovim    # Modal editor (suckless-friendly)
+    helix     # Modern modal editor (Rust)
+
+    # Build tools
+    gnumake
+    cmake
+    meson
+    ninja
+
+    # Debugging & profiling
+    gdb
+    valgrind
+    strace
+
+    # ===== Learning & Documentation =====
+    man-pages
+    man-pages-posix
+    tldr      # Simplified man pages
+    tealdeer  # Fast tldr (Rust)
+    cheat     # Cheatsheets for CLI
 
     # Note-taking & PKM
-    obsidian
-    zathura  # PDF viewer
+    obsidian  # Markdown-based notes
+    zathura   # Minimal PDF viewer (suckless philosophy)
+    mupdf     # Lightweight PDF viewer
 
-    # Screenshots
-    grim
-    slurp
-    swappy
+    # ===== Productivity =====
+    # Screenshots & screen tools
+    grim      # Screenshot tool
+    slurp     # Screen area selector
+    swappy    # Screenshot editor
+    wl-clipboard  # Clipboard for Wayland
 
-    # System monitoring
-    btop
-    # nvtop  # GPU monitoring - may need specific package
-    # iotop  # IO monitoring - btop provides similar functionality
+    # Calculators & utilities
+    bc        # Calculator
+    calc      # Better calculator
+    units     # Unit converter
 
-    # Utilities
+    # Text processing
+    jq        # JSON processor
+    yq        # YAML processor
+    sd        # Better sed (Rust)
+    hexyl     # Hex viewer (Rust)
+
+    # ===== System Utilities =====
     tree
-    jq
-    yq
-    tldr
-    man-pages
+    tokei     # Code statistics (Rust)
+    hyperfine # Benchmarking (Rust)
+    choose    # Better cut/awk (Rust)
+
+    # Fuzzy tools
+    fuzzel    # Application launcher (Wayland)
+
+    # Info tools
     neofetch
+    fastfetch # Faster neofetch alternative
+
+    # ===== Security & Privacy =====
+    age       # Modern encryption
+    gnupg     # GPG encryption
+    pass      # Password manager (suckless)
+
+    # ===== Fun & Learning =====
+    cmatrix   # Matrix effect
+    pipes-rs  # Animated pipes (Rust)
+    cowsay
+    fortune
   ];
 
   # ===== XDG =====
@@ -114,12 +176,49 @@
     };
   };
 
+  # ===== GTK Theme =====
+  gtk = {
+    enable = true;
+
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = true;
+    };
+
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = true;
+    };
+  };
+
+  # ===== Qt Theme =====
+  qt = {
+    enable = true;
+    platformTheme.name = "adwaita";
+    style.name = "adwaita-dark";
+  };
+
   # ===== Session Variables =====
   home.sessionVariables = {
     # Wayland
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
+
+    # HiDPI support
+    GDK_SCALE = "1";  # Integer scaling for GTK3
+    GDK_DPI_SCALE = "1.0";  # Font scaling for GTK3
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";  # Qt auto-scaling
+    QT_SCALE_FACTOR = "1";  # Qt manual scaling
+    XCURSOR_SIZE = "32";  # Cursor size for X11 apps
 
     # Editor - set by services.emacs.defaultEditor in emacs.nix
 
