@@ -53,21 +53,13 @@
     open = false;
   };
 
-  # Force NVIDIA GPU for gaming
+  # Gaming environment variables
+  # Note: GPU performance settings are in gpu-performance.nix
   environment.variables = {
-    # Use NVIDIA GPU by default
-    __NV_PRIME_RENDER_OFFLOAD = "1";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-
     # Gaming environment variables
     DXVK_HUD = "fps";  # Show FPS in games
     PROTON_ENABLE_NVAPI = "1";  # Better NVIDIA support in Proton
     PROTON_HIDE_NVIDIA_GPU = "0";
-
-    # Wayland NVIDIA
-    GBM_BACKEND = "nvidia-drm";
-    __GL_GSYNC_ALLOWED = "1";
-    __GL_VRR_ALLOWED = "1";  # Variable refresh rate
   };
 
   # ===== Gaming Packages =====
