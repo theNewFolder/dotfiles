@@ -11,6 +11,8 @@
     ./gaming-optimizations.nix
     # Maximum GPU performance
     ./gpu-performance.nix
+    # Auto-enable GPU performance on boot
+    ./nvidia-auto-performance.nix
   ];
 
   # ===== Boot =====
