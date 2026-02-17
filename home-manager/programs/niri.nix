@@ -246,7 +246,7 @@
     spawn-at-startup "mako"
 
     // Gamma/Night light
-    spawn-at-startup "wl-sunset" "-l" "25" "-L" "55"  // Adjust for Dubai
+    spawn-at-startup "wlsunset" "-l" "25" "-L" "55"  // Adjust for Dubai
   '';
 
   # Waybar configuration for niri
@@ -367,7 +367,7 @@
     mpvpaper   # Video wallpapers (optional)
 
     # Color/gamma control
-    wl-sunset  # Day/night gamma adjustment
+    wlsunset  # Day/night gamma adjustment
     wl-gammarelay  # Manual gamma control
 
     # Screen recording

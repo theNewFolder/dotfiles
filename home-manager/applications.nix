@@ -163,8 +163,8 @@
     flameshot   # Screenshot tool
 
     # ===== Screen Color Management =====
-    wl-sunset   # Gamma adjustment
-    wl-gammarelay
+    wlsunset    # Gamma adjustment (day/night)
+    # wl-gammarelay  # Manual gamma control (if needed)
 
     # ===== Benchmarking =====
     hyperfine   # Command-line benchmarking
