@@ -43,13 +43,9 @@
         variable-refresh-rate on  // Enable VRR if supported
     }
 
-    // Laptop display
+    // Laptop display - DISABLED (using external only)
     output "eDP-1" {
-        mode "1920x1080@144"
-        scale 1.0  // Standard DPI
-        position x=2560 y=0  // Position adjusted for scaled primary display (3840/1.5=2560)
-        transform "normal"
-        variable-refresh-rate on
+        off
     }
 
     // ===== Layout =====
