@@ -368,7 +368,7 @@
 
     # Color/gamma control
     wlsunset  # Day/night gamma adjustment
-    wl-gammarelay  # Manual gamma control
+    wl-gammarelay-rs  # Manual gamma control
 
     # Screen recording
     wf-recorder  # Wayland screen recorder
