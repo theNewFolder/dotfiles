@@ -80,8 +80,8 @@
 
     # System monitoring
     btop
-    nvtop
-    iotop
+    # nvtop  # GPU monitoring - may need specific package
+    # iotop  # IO monitoring - btop provides similar functionality
 
     # Utilities
     tree
