@@ -79,8 +79,7 @@
     # Languages
     # nodejs - provided by mcp-servers.nix
     python3
-    rustc
-    cargo
+    # rustc, cargo - provided by rustup in applications.nix
     go
     gcc
     clang

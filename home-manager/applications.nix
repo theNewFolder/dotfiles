@@ -63,6 +63,10 @@
     iperf3
     bandwhich   # Network utilization
     dog         # DNS client (dig alternative)
+    bluetuith   # Bluetooth TUI manager
+
+    # Wayland utilities
+    wdisplays   # Wayland display configurator
 
     # ===== Media & Graphics =====
     # Image viewers/editors
