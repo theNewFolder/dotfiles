@@ -78,7 +78,7 @@
       zshconf = "nvim ~/dotfiles/home-manager/programs/zsh.nix";
     };
 
-    initExtra = ''
+    initContent = ''
       # Load secrets if they exist
       [[ -f ~/.secrets/gemini_api_key ]] && export GEMINI_API_KEY=$(cat ~/.secrets/gemini_api_key)
       [[ -f ~/.secrets/anthropic_api_key ]] && export ANTHROPIC_API_KEY=$(cat ~/.secrets/anthropic_api_key)

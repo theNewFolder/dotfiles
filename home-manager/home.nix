@@ -37,7 +37,7 @@
     fzf
     bottom
     htop
-    du-dust
+    dust
     procs
     tokei
     hyperfine
