@@ -197,7 +197,7 @@
 
     # Backup
     restic      # Backup tool
-    borg        # Deduplicating backup
+    borgbackup  # Deduplicating backup
 
     # ===== Learning & Documentation =====
     man-pages
