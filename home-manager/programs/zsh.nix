@@ -32,8 +32,8 @@
     };
 
     sessionVariables = {
-      EDITOR = "nvim";
-      VISUAL = "nvim";
+      # EDITOR is set by services.emacs.defaultEditor in emacs.nix
+      # VISUAL = "nvim";  # Let Emacs be the visual editor too
       PAGER = "bat --style=plain";
     };
 
