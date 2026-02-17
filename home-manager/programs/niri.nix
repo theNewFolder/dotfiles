@@ -315,12 +315,14 @@
   # Mako notification daemon
   services.mako = {
     enable = true;
-    backgroundColor = colorScheme.bg;
-    textColor = colorScheme.fg;
-    borderColor = colorScheme.yellow;
-    borderSize = 2;
-    defaultTimeout = 5000;
-    font = "JetBrainsMono Nerd Font 11";
+    settings = {
+      background-color = colorScheme.bg;
+      text-color = colorScheme.fg;
+      border-color = colorScheme.yellow;
+      border-size = 2;
+      default-timeout = 5000;
+      font = "JetBrainsMono Nerd Font 11";
+    };
   };
 
   # Additional Wayland tools
