@@ -1,0 +1,416 @@
+#+TITLE: Personal Knowledge Base
+#+AUTHOR: dev
+#+DATE: 2026-02-17
+#+STARTUP: overview
+#+OPTIONS: toc:2 num:nil
+#+PROPERTY: header-args :mkdirp yes
+
+* Welcome to Your PKM System
+
+This is your Personal Knowledge Management (PKM) system built with Emacs Org-mode.
+
+** How to Use This System
+
+- Press =C-c a= (or =SPC o a= in Evil) to open the Org Agenda
+- Press =C-c c= (or =SPC o c= in Evil) to capture new notes
+- Press =C-c n f= (or =SPC o r= in Evil) to find/create Org-roam notes
+- Press =C-c n i= to insert a link to an Org-roam note
+- Use =TAB= to fold/unfold sections
+- Use =Shift+TAB= to cycle through visibility levels
+
+** Quick Reference
+
+| Action              | Keybinding       | Evil Keybinding |
+|---------------------+------------------+-----------------|
+| Org Agenda          | =C-c a=          | =SPC o a=       |
+| Org Capture         | =C-c c=          | =SPC o c=       |
+| Org-roam Find       | =C-c n f=        | =SPC o r=       |
+| Org-roam Insert     | =C-c n i=        | -               |
+| Magit Status        | =C-x g=          | =SPC g s=       |
+| Save Buffer         | =C-x C-s=        | =SPC f s=       |
+| Find File           | =C-x C-f=        | =SPC f f=       |
+| Switch Buffer       | =C-x b=          | =SPC b b=       |
+
+* NixOS Learning
+** TODO Study Flakes
+
+Flakes are the new way to manage Nix configurations for reproducibility.
+
+*** Resources
+- Official guide: https://nixos.wiki/wiki/Flakes
+- NixOS & Flakes Book: https://nixos-and-flakes.thiscute.world/
+- Chris Portela's guide: https://www.chrisportela.com/posts/home-manager-flake/
+
+*** Key Concepts
+- =flake.nix= - Main configuration file
+- =flake.lock= - Lock file for reproducibility
+- =inputs= - Dependencies (nixpkgs, home-manager, etc.)
+- =outputs= - What the flake produces (nixosConfigurations, etc.)
+
+*** Common Commands
+#+begin_src bash :eval no
+# Update flake inputs
+nix flake update
+
+# Show flake outputs
+nix flake show
+
+# Build configuration
+nixos-rebuild build --flake ~/dotfiles#tuxnix
+
+# Switch to new configuration
+sudo nixos-rebuild switch --flake ~/dotfiles#tuxnix
+#+end_src
+
+** TODO Learn Home Manager
+
+Home Manager manages user-specific configuration declaratively.
+
+*** Directory Structure
+- =~/dotfiles/home-manager/home.nix= - Main config
+- =~/dotfiles/home-manager/programs/= - Per-program configs
+- =~/dotfiles/home-manager/services/= - User services
+- =~/dotfiles/home-manager/themes/= - Themes and color schemes
+
+*** Integration Patterns
+Two main approaches:
+1. *NixOS module* (what we're using) - integrated with system
+2. *Standalone* - independent of NixOS
+
+*** Resources
+- Official manual: https://nix-community.github.io/home-manager/
+- Example configs: https://github.com/fufexan/dotfiles
+
+** TODO Understand Nix Language
+
+The Nix expression language is functional and declarative.
+
+*** Basic Syntax
+#+begin_src nix :eval no
+# Variables
+let
+  name = "value";
+  number = 42;
+in
+
+# Functions
+add = x: y: x + y
+
+# Attribute sets
+config = {
+  enable = true;
+  port = 8080;
+}
+
+# Lists
+packages = [ pkg1 pkg2 pkg3 ];
+
+# String interpolation
+message = "Hello, ${name}!"
+#+end_src
+
+*** Resources
+- Nix Pills: https://nixos.org/guides/nix-pills/
+- Nix language basics: https://nixos.org/manual/nix/stable/language/
+
+** System Configuration
+
+*** Current Setup
+- Hostname: tuxnix
+- OS: NixOS 26.05 (Yarara)
+- Architecture: x86_64-linux
+- CPU: AMD (with microcode updates)
+- GPU: NVIDIA (proprietary drivers)
+- Filesystem: Btrfs with compression (zstd)
+
+*** Dotfiles Location
+- System config: =~/dotfiles/nixos/configuration.nix=
+- Home config: =~/dotfiles/home-manager/home.nix=
+- Flake: =~/dotfiles/flake.nix=
+
+*** Rebuild Workflow
+1. Edit config files in =~/dotfiles/=
+2. Run =rebuild= alias (or =sudo nixos-rebuild switch --flake ~/dotfiles#tuxnix=)
+3. System rebuilds and switches to new configuration
+4. Changes take effect immediately (may need to re-login for some changes)
+
+* Linux Administration
+** System Management
+
+*** Systemd
+#+begin_src bash :eval no
+# List all services
+systemctl list-units --type=service
+
+# User services
+systemctl --user status emacs
+
+# Enable service at boot
+sudo systemctl enable service-name
+
+# View logs
+journalctl -xe
+journalctl -u service-name -f
+#+end_src
+
+** Networking
+
+*** NetworkManager
+#+begin_src bash :eval no
+# List connections
+nmcli connection show
+
+# Connect to WiFi
+nmcli device wifi connect "SSID" password "PASSWORD"
+
+# Show status
+nmcli general status
+#+end_src
+
+** File Systems
+
+*** Btrfs Maintenance
+#+begin_src bash :eval no
+# Check usage
+sudo btrfs filesystem usage /
+
+# Scrub (verify data integrity)
+sudo btrfs scrub start /
+sudo btrfs scrub status /
+
+# Balance (rebalance data)
+sudo btrfs balance start /
+
+# Show snapshots
+sudo btrfs subvolume list /
+#+end_src
+
+* Bash/Shell Scripting
+** Zsh Configuration
+
+My current shell is Zsh with Oh My Zsh.
+
+*** Config Location
+- Source: =~/dotfiles/home-manager/programs/zsh.nix=
+- Generated: =~/.zshrc= (managed by home-manager)
+
+*** Useful Aliases
+- =rebuild= - Rebuild NixOS configuration
+- =update= - Update flake and rebuild
+- =cleanup= - Remove old generations
+- =ls= → =eza --icons=
+- =cat= → =bat=
+- =top= → =btm=
+
+** Bash Scripting Patterns
+
+*** Error Handling
+#+begin_src bash :eval no
+#!/usr/bin/env bash
+set -euo pipefail  # Exit on error, undefined vars, pipe failures
+IFS=$'\n\t'        # Set word splitting to newline and tab only
+
+# Your script here
+#+end_src
+
+*** Checking if Command Exists
+#+begin_src bash :eval no
+if command -v nvim &> /dev/null; then
+    echo "nvim is installed"
+fi
+#+end_src
+
+*** Loops
+#+begin_src bash :eval no
+# For loop
+for file in *.txt; do
+    echo "Processing $file"
+done
+
+# While loop
+while read -r line; do
+    echo "$line"
+done < input.txt
+#+end_src
+
+* Emacs Org-Mode
+** TODO Complete Org-mode Tutorial
+
+Work through the built-in Org-mode tutorial.
+
+*** How to Access
+1. Open Emacs
+2. Press =C-h i= (help info)
+3. Navigate to "Org mode" section
+
+** Org Capture Templates
+
+Define custom capture templates in your Emacs config to quickly create notes.
+
+*** Example Template
+#+begin_src emacs-lisp :eval no
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/tasks.org" "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("n" "Note" entry (file+datetree "~/org/notes.org")
+         "* %?\nEntered on %U\n  %i\n  %a")))
+#+end_src
+
+** Org-Roam for PKM
+
+Org-roam is a plain-text personal knowledge management system.
+
+*** Concepts
+- *Nodes* - Individual notes (can be a file or heading)
+- *Links* - Connections between nodes
+- *Backlinks* - Show what links to current node
+- *Graph* - Visualize your knowledge network
+
+*** Workflow
+1. Create new note: =C-c n f= (find/create)
+2. Insert link: =C-c n i=
+3. View backlinks: =C-c n b= (toggle buffer)
+4. Daily notes: =C-c n d=
+
+*** Resources
+- Official docs: https://www.orgroam.com/
+- Org-roam v2 manual: https://www.orgroam.com/manual.html
+
+* AI Tools Integration
+** Claude CLI
+
+Located at =~/claud/claude=
+
+*** Setup
+#+begin_src bash :eval no
+# Add to PATH (or create symlink)
+export PATH="$HOME/claud/claude:$PATH"
+
+# API key location
+echo "sk-ant-..." > ~/.secrets/anthropic_api_key
+chmod 600 ~/.secrets/anthropic_api_key
+#+end_src
+
+** Gemini CLI
+
+*** Installation
+#+begin_src bash :eval no
+npm install -g @google/generative-ai-cli
+
+# Or add to home.nix if available in nixpkgs
+#+end_src
+
+*** Setup
+#+begin_src bash :eval no
+# API key
+echo "your-key-here" > ~/.secrets/gemini_api_key
+chmod 600 ~/.secrets/gemini_api_key
+
+# Export in shell (already done in zsh.nix)
+export GEMINI_API_KEY=$(cat ~/.secrets/gemini_api_key)
+#+end_src
+
+** GPTel in Emacs
+
+Already configured in =emacs.nix= init.el.
+
+*** Usage
+1. Open file or create buffer
+2. =M-x gptel=
+3. Type your query
+4. Send with =C-c RET=
+
+*** Switching Models
+- =M-x gptel-menu= to configure backend/model
+- Supports: ChatGPT, Gemini, Claude, and more
+
+* Window Manager: Niri
+** What is Niri?
+
+Niri is a scrollable-tiling Wayland compositor. Windows are arranged in columns on an infinite horizontal strip.
+
+*** Key Features
+- Scrollable workspaces (windows scroll horizontally)
+- No window resizing on new window open
+- Dynamic workspaces
+- Vim-style keybindings
+
+** Configuration
+
+Config file: =~/.config/niri/config.kdl=
+Source: =~/dotfiles/home-manager/programs/niri.nix=
+
+** Key Bindings
+
+*** Essential
+- =Super+Return= - Terminal (wezterm)
+- =Super+D= - App launcher (fuzzel)
+- =Super+Q= - Close window
+- =Super+E= - Emacs
+- =Super+B= - Firefox
+
+*** Navigation (Vim-style)
+- =Super+H/J/K/L= - Focus left/down/up/right
+- =Super+Shift+H/J/K/L= - Move window
+
+*** Workspaces
+- =Super+1..9= - Switch to workspace
+- =Super+Shift+1..9= - Move window to workspace
+
+*** Layout
+- =Super+R= - Cycle column width presets
+- =Super+F= - Maximize column
+- =Super+Shift+F= - Fullscreen window
+
+** Resources
+- Official docs: https://github.com/niri-wm/niri/wiki
+- NixOS wiki: https://wiki.nixos.org/wiki/Niri
+- Example configs: https://github.com/sodiboo/niri-flake
+
+* Projects
+** TODO Set up a test NixOS VM
+
+Learn NixOS safely by testing in a VM before applying to main system.
+
+** TODO Create dotfiles documentation
+
+Write comprehensive docs for this NixOS setup.
+
+** TODO Explore Org-roam graphs
+
+Build a knowledge graph of learnings.
+
+* Resources & References
+** Documentation
+- [[https://nixos.org/][NixOS Official]]
+- [[https://nixos.wiki/][NixOS Wiki]]
+- [[https://nix.dev/][nix.dev Tutorials]]
+- [[https://orgmode.org/][Org-mode Official]]
+
+** Community
+- [[https://discourse.nixos.org/][NixOS Discourse]]
+- [[https://www.reddit.com/r/NixOS/][r/NixOS]]
+- [[https://www.reddit.com/r/orgmode/][r/orgmode]]
+
+** Example Configs
+- [[https://github.com/fufexan/dotfiles][fufexan/dotfiles]] (Niri + NixOS)
+- [[https://github.com/Misterio77/nix-config][Misterio77/nix-config]] (Comprehensive)
+- [[https://github.com/hlissner/dotfiles][hlissner/dotfiles]] (Doom Emacs creator)
+
+* Journal
+** 2026-02-17: Initial Setup
+
+- Migrated from CachyOS to NixOS 26.05
+- Set up flakes-based dotfiles with home-manager
+- Configured Niri as primary window manager
+- Emacs with Evil, Org-mode, and Org-roam
+- Firefox with Gruvbox customization
+- AI tools: Claude CLI, planning for Gemini CLI
+
+*** Next Steps
+- [ ] Test full system rebuild
+- [ ] Configure Gemini CLI
+- [ ] Create org-capture templates
+- [ ] Set up Org-roam daily notes
+- [ ] Explore Niri workflow
+- [ ] Learn Nix language basics
