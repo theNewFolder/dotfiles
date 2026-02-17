@@ -23,6 +23,8 @@
     ./programs/niri.nix
     ./programs/foot.nix
     ./programs/mcp-servers.nix
+    ./programs/fontconfig.nix
+    ./programs/gpu-info.nix
     ./applications.nix
   ];
 

@@ -9,6 +9,8 @@
     ./hardware-configuration.nix
     # Gaming and performance optimizations for TUF laptop
     ./gaming-optimizations.nix
+    # Maximum GPU performance
+    ./gpu-performance.nix
   ];
 
   # ===== Boot =====
@@ -124,6 +126,23 @@
     noto-fonts-color-emoji
     liberation_ttf
   ];
+
+  # ===== Font Rendering (System-wide) =====
+  fonts.fontconfig = {
+    enable = true;
+    antialias = true;
+    hinting = {
+      enable = true;
+      style = "slight";
+    };
+    subpixel = {
+      rgba = "rgb";
+      lcdfilter = "light";
+    };
+  };
+
+  # FreeType settings for better rendering
+  fonts.fontDir.enable = true;
 
   # ===== Security =====
   security.sudo.wheelNeedsPassword = true;
