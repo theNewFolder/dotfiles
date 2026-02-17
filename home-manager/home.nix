@@ -115,9 +115,7 @@
     MOZ_ENABLE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
 
-    # Editor
-    EDITOR = "nvim";
-    VISUAL = "nvim";
+    # Editor - set by services.emacs.defaultEditor in emacs.nix
 
     # Path additions
     PATH = "$HOME/.local/bin:$HOME/bin:$PATH";
