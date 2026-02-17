@@ -1,10 +1,8 @@
 # Zsh shell configuration
 
-{ config, pkgs, ... }:
+{ config, pkgs, colorScheme, ... }:
 
-let
-  colors = config.colorScheme;
-in {
+{
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -92,9 +90,9 @@ in {
       export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
       export FZF_DEFAULT_OPTS='
         --height 40% --layout=reverse --border
-        --color=bg+:${colors.bg1},bg:${colors.bg},spinner:${colors.bright_red},hl:${colors.gray}
-        --color=fg:${colors.fg},header:${colors.gray},info:${colors.bright_aqua},pointer:${colors.bright_red}
-        --color=marker:${colors.bright_red},fg+:${colors.fg},prompt:${colors.bright_red},hl+:${colors.bright_red}'
+        --color=bg+:${colorScheme.bg1},bg:${colorScheme.bg},spinner:${colorScheme.bright_red},hl:${colorScheme.gray}
+        --color=fg:${colorScheme.fg},header:${colorScheme.gray},info:${colorScheme.bright_aqua},pointer:${colorScheme.bright_red}
+        --color=marker:${colorScheme.bright_red},fg+:${colorScheme.fg},prompt:${colorScheme.bright_red},hl+:${colorScheme.bright_red}'
 
       # Useful functions
       mkcd() { mkdir -p "$1" && cd "$1"; }

@@ -1,10 +1,10 @@
 # Gruvbox Dark color scheme
 # Shared colors for all programs
 
-{ lib, ... }:
+{ lib, config, ... }:
 
-{
-  # Define color scheme for programs that support it
+let
+  # Define color scheme as a local attribute set
   colorScheme = rec {
     name = "Gruvbox Dark";
 
@@ -52,11 +52,17 @@
     dim_aqua = "#427b58";
     dim_orange = "#af3a03";
   };
+in {
+  # Export as config option for use in other modules
+  config = {
+    # Make colorScheme available to other modules
+    _module.args.colorScheme = colorScheme;
 
-  home.sessionVariables = {
-    # Set color scheme in environment for scripts
-    GRUVBOX_BG = "#282828";
-    GRUVBOX_FG = "#ebdbb2";
-    GRUVBOX_ACCENT = "#d79921";
+    home.sessionVariables = {
+      # Set color scheme in environment for scripts
+      GRUVBOX_BG = colorScheme.bg;
+      GRUVBOX_FG = colorScheme.fg;
+      GRUVBOX_ACCENT = colorScheme.yellow;
+    };
   };
 }

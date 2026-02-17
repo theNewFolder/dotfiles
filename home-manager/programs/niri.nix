@@ -1,10 +1,8 @@
 # Niri Wayland compositor configuration
 
-{ config, pkgs, ... }:
+{ config, pkgs, colorScheme, ... }:
 
-let
-  colors = config.colorScheme;
-in {
+{
   # Niri config file (KDL format)
   # Note: home-manager doesn't have a programs.niri module yet,
   # so we'll create the config file directly
@@ -62,14 +60,14 @@ in {
 
         focus-ring {
             width 2
-            active-color "${colors.yellow}"
-            inactive-color "${colors.bg2}"
+            active-color "${colorScheme.yellow}"
+            inactive-color "${colorScheme.bg2}"
         }
 
         border {
             width 2
-            active-color "${colors.yellow}"
-            inactive-color "${colors.bg2}"
+            active-color "${colorScheme.yellow}"
+            inactive-color "${colorScheme.bg2}"
         }
     }
 
@@ -193,8 +191,8 @@ in {
         GDK_BACKEND "wayland"
 
         // Gruvbox colors
-        GRUVBOX_BG "${colors.bg}"
-        GRUVBOX_FG "${colors.fg}"
+        GRUVBOX_BG "${colorScheme.bg}"
+        GRUVBOX_FG "${colorScheme.fg}"
     }
 
     // ===== Animations =====
@@ -288,28 +286,28 @@ in {
       }
 
       window#waybar {
-        background-color: ${colors.bg};
-        color: ${colors.fg};
+        background-color: ${colorScheme.bg};
+        color: ${colorScheme.fg};
       }
 
       #custom-niri-workspaces, #custom-niri-window,
       #clock, #cpu, #memory, #temperature, #battery, #network, #pulseaudio {
         padding: 0 10px;
-        background-color: ${colors.bg1};
-        color: ${colors.fg};
+        background-color: ${colorScheme.bg1};
+        color: ${colorScheme.fg};
         margin: 2px 2px;
       }
 
       #battery.warning {
-        color: ${colors.yellow};
+        color: ${colorScheme.yellow};
       }
 
       #battery.critical {
-        color: ${colors.red};
+        color: ${colorScheme.red};
       }
 
       #temperature.critical {
-        color: ${colors.red};
+        color: ${colorScheme.red};
       }
     '';
   };
@@ -317,9 +315,9 @@ in {
   # Mako notification daemon
   services.mako = {
     enable = true;
-    backgroundColor = colors.bg;
-    textColor = colors.fg;
-    borderColor = colors.yellow;
+    backgroundColor = colorScheme.bg;
+    textColor = colorScheme.fg;
+    borderColor = colorScheme.yellow;
     borderSize = 2;
     defaultTimeout = 5000;
     font = "JetBrainsMono Nerd Font 11";

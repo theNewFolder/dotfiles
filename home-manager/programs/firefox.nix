@@ -1,10 +1,8 @@
 # Firefox browser configuration
 
-{ config, pkgs, ... }:
+{ config, pkgs, colorScheme, ... }:
 
-let
-  colors = config.colorScheme;
-in {
+{
   programs.firefox = {
     enable = true;
 
@@ -71,19 +69,19 @@ in {
 
         /* Gruvbox colors for URL bar */
         #urlbar {
-          background-color: ${colors.bg1} !important;
-          color: ${colors.fg} !important;
-          border: 1px solid ${colors.bg2} !important;
+          background-color: ${colorScheme.bg1} !important;
+          color: ${colorScheme.fg} !important;
+          border: 1px solid ${colorScheme.bg2} !important;
         }
 
         #urlbar-input {
-          color: ${colors.fg} !important;
+          color: ${colorScheme.fg} !important;
         }
 
         /* Gruvbox colors for search bar */
         #searchbar {
-          background-color: ${colors.bg1} !important;
-          color: ${colors.fg} !important;
+          background-color: ${colorScheme.bg1} !important;
+          color: ${colorScheme.fg} !important;
         }
 
         /* Hide sidebar header */
@@ -96,8 +94,8 @@ in {
         /* Dark theme for web content */
         @-moz-document url-prefix(about:) {
           * {
-            background-color: ${colors.bg} !important;
-            color: ${colors.fg} !important;
+            background-color: ${colorScheme.bg} !important;
+            color: ${colorScheme.fg} !important;
           }
         }
       '';
