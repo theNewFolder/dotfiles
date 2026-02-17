@@ -17,9 +17,13 @@
     ./themes/gruvbox.nix
     ./programs/git.nix
     ./programs/zsh.nix
+    ./programs/starship.nix
     ./programs/emacs.nix
     ./programs/firefox.nix
     ./programs/niri.nix
+    ./programs/foot.nix
+    ./programs/mcp-servers.nix
+    ./applications.nix
   ];
 
   # ===== Packages =====

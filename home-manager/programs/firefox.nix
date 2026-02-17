@@ -40,6 +40,26 @@
         # Search
         "browser.urlbar.suggest.searches" = true;
         "browser.search.suggest.enabled" = true;
+
+        # ===== Gaming & Performance Optimizations =====
+        "browser.cache.memory.capacity" = 524288;  # 512MB cache
+
+        # Hardware acceleration (NVIDIA)
+        "gfx.webrender.all" = true;
+        "layers.acceleration.force-enabled" = true;
+        "media.hardware-video-decoding.force-enabled" = true;
+        "webgl.force-enabled" = true;
+
+        # Network performance
+        "network.http.max-connections" = 1800;
+        "network.http.max-persistent-connections-per-server" = 10;
+
+        # Reduce input lag
+        "mousewheel.system_scroll_override.enabled" = true;
+
+        # Smooth animations
+        "browser.tabs.animate" = true;
+        "browser.fullscreen.animate" = true;
       };
 
       # Extensions - Note: NUR is required for firefox-addons

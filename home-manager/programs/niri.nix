@@ -47,7 +47,7 @@
 
     // ===== Layout =====
     layout {
-        gaps 8
+        gaps 12  // Larger gaps for better aesthetics
         center-focused-column "never"
 
         preset-column-widths {
@@ -58,16 +58,25 @@
 
         default-column-width { proportion 0.5; }
 
+        // Vibrant focus ring
         focus-ring {
-            width 2
-            active-color "${colorScheme.yellow}"
-            inactive-color "${colorScheme.bg2}"
+            width 4  // Thicker for visibility
+            active-color "${colorScheme.bright_yellow}"  // Bright yellow
+            inactive-color "${colorScheme.bg3}"
+
+            // Gradient effect (if supported)
+            active-gradient {
+                from "${colorScheme.bright_yellow}"
+                to "${colorScheme.bright_orange}"
+                angle 45
+            }
         }
 
+        // Vibrant borders
         border {
-            width 2
-            active-color "${colorScheme.yellow}"
-            inactive-color "${colorScheme.bg2}"
+            width 3
+            active-color "${colorScheme.bright_yellow}"
+            inactive-color "${colorScheme.bg3}"
         }
     }
 
@@ -197,27 +206,47 @@
 
     // ===== Animations =====
     animations {
-        slowdown 1.0
+        slowdown 0.8  // Slightly faster for gaming feel
 
         window-open {
-            duration-ms 150
+            duration-ms 200
+            curve "ease-out-cubic"
         }
 
         window-close {
             duration-ms 150
+            curve "ease-in-cubic"
         }
 
         workspace-switch {
-            duration-ms 200
+            duration-ms 250
+            curve "ease-in-out-cubic"
+        }
+
+        window-movement {
+            duration-ms 150
+            curve "ease-out-quad"
+        }
+
+        window-resize {
+            duration-ms 150
+            curve "ease-out-quad"
         }
     }
 
     // ===== Screenshot =====
     screenshot-path "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png"
 
+    // ===== Background (Wallpaper) =====
+    // Using swaybg for wallpaper
+    spawn-at-startup "swaybg" "-i" "$HOME/Pictures/Wallpapers/gruvbox-current.png" "-m" "fill"
+
     // ===== Startup =====
     spawn-at-startup "waybar"
     spawn-at-startup "mako"
+
+    // Gamma/Night light
+    spawn-at-startup "wl-sunset" "-l" "25" "-L" "55"  // Adjust for Dubai
   '';
 
   # Waybar configuration for niri
@@ -325,11 +354,29 @@
     };
   };
 
-  # Additional Wayland tools
+  # Additional Wayland tools and eye candy
   home.packages = with pkgs; [
+    # Screenshots and screen tools
     grim       # Screenshot
     slurp      # Screen area selection
+    swappy     # Screenshot editor
     wl-clipboard
-    wev        # Wayland event viewer (for debugging)
+
+    # Wallpaper
+    swaybg     # Background/wallpaper daemon
+    mpvpaper   # Video wallpapers (optional)
+
+    # Color/gamma control
+    wl-sunset  # Day/night gamma adjustment
+    wl-gammarelay  # Manual gamma control
+
+    # Screen recording
+    wf-recorder  # Wayland screen recorder
+
+    # Debug tools
+    wev        # Wayland event viewer
+
+    # Notifications enhancement
+    libnotify  # Desktop notifications
   ];
 }

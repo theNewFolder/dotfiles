@@ -11,7 +11,7 @@
 
     oh-my-zsh = {
       enable = true;
-      theme = "agnoster";
+      theme = "";  # Disabled, using Starship instead
       plugins = [
         "git"
         "docker"
@@ -19,6 +19,9 @@
         "kubectl"
         "sudo"
         "command-not-found"
+        "colored-man-pages"
+        "extract"
+        "z"  # Jump to frequent directories
       ];
     };
 

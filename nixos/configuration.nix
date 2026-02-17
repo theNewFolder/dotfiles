@@ -7,6 +7,8 @@
   imports = [
     # Include the results of the hardware scan
     ./hardware-configuration.nix
+    # Gaming and performance optimizations for TUF laptop
+    ./gaming-optimizations.nix
   ];
 
   # ===== Boot =====
