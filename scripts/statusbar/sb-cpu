@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # CPU usage — status2d red (#fb4934)
 
 btn="${BUTTON:-${BLOCK_BUTTON:-0}}"

@@ -31,8 +31,6 @@ copy_if_exists ".emacs.d/early-init.el"
 # Desktop components
 copy_if_exists ".config/picom/picom.conf"
 copy_if_exists ".config/dunst/dunstrc"
-copy_if_exists ".config/rofi/config.rasi"
-copy_if_exists ".config/rofi/gruvbox.rasi"
 
 # Cursor (optional, if present)
 copy_if_exists ".config/Cursor/User/settings.json"

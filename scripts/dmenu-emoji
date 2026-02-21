@@ -1,0 +1,18 @@
+#!/bin/sh
+# Emoji picker via dmenu — copies to clipboard
+
+EMOJI_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/emoji"
+
+if [ ! -f "$EMOJI_FILE" ]; then
+	notify-send "Emoji picker" "Emoji file not found: $EMOJI_FILE"
+	exit 1
+fi
+
+chosen="$(cut -d ';' -f1 "$EMOJI_FILE" | dmenu -i -l 20 -p "Emoji:")" || exit 1
+[ -z "$chosen" ] && exit 0
+
+# Extract just the emoji character (first field)
+emoji="$(printf '%s' "$chosen" | sed 's/ .*//')"
+
+printf '%s' "$emoji" | xclip -selection clipboard
+notify-send "Copied" "$emoji"

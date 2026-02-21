@@ -66,7 +66,7 @@ static const char *colors[][3] = {
 };
 
 /* ── Tags ─────────────────────────────────────────────────────── */
-static const char *tags[] = { " ", " 󰈹", " ", " ", " 󰕼", " 󰍩", " 󰎆", " ", " 󰇮" };
+static const char *tags[] = { "󰆍", "󰈹", "󰘧", "󰉋", "󰙯", "󰕧", "󰎈", "󰒓", "󰇮" };
 
 /* ── Rules ────────────────────────────────────────────────────── */
 static const Rule rules[] = {
@@ -131,20 +131,20 @@ static const char *lockcmd[]    = { "slock", NULL };
 static const char *sysactcmd[]  = { "sysact", NULL };
 static const char *scrotcmd[]   = { "scrot", "-s", "/tmp/shot_%Y%m%d_%H%M%S.png", NULL };
 
-/* volume (amixer) + signal dwmblocks (10 + 34 = 44) */
+/* volume (wpctl/pipewire) + signal dwmblocks (10 + 34 = 44) */
 static const char *volupcmd[] = {
     "sh", "-c",
-    "amixer -q set Master 5%+ unmute; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
+    "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
     NULL
 };
 static const char *voldncmd[] = {
     "sh", "-c",
-    "amixer -q set Master 5%- unmute; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
+    "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
     NULL
 };
 static const char *mutecmd[] = {
     "sh", "-c",
-    "amixer -q set Master toggle; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
+    "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
     NULL
 };
 
@@ -211,7 +211,7 @@ shifttag(const Arg *arg)
 static const Key keys[] = {
     /* modifier                  key             function        argument */
     /* ── Launch (LARBS-style cluster) ─────────────────────────── */
-    { MODKEY,                    XK_grave,       spawn,          SHCMD("command -v dmenuunicode >/dev/null && dmenuunicode || dmenu_run") },
+    { MODKEY,                    XK_minus,       spawn,          SHCMD("command -v dmenuunicode >/dev/null && dmenuunicode || dmenu_run") },
     { MODKEY,                    XK_d,           spawn,          {.v = dmenucmd} },
     { MODKEY|ShiftMask,          XK_d,           spawn,          SHCMD("command -v passmenu >/dev/null && passmenu") },
     { MODKEY,                    XK_Return,      spawn,          {.v = termcmd} },
@@ -299,14 +299,14 @@ static const Key keys[] = {
 
     /* ── Emacs Integration ────────────────────────────────────── */
     { MODKEY,            XK_c,      spawn,    SHCMD("emacsclient -c -e '(org-capture)'") },
-    { MODKEY|ShiftMask,  XK_a,      spawn,    SHCMD("emacsclient -c -e '(org-agenda-list)'") },
+    { MODKEY|ControlMask, XK_a,     spawn,    SHCMD("emacsclient -c -e '(org-agenda-list)'") },
     { MODKEY,            XK_n,      spawn,    SHCMD("emacsclient -c -e '(org-roam-node-find)'") },
     { MODKEY|ShiftMask,  XK_e,      spawn,    SHCMD("dmenu-emacs") },
 
     /* ── dmenu Scripts ───────────────────────────────────────── */
-    { MODKEY,            XK_x,      spawn,    SHCMD("dmenu-power") },
+    { MODKEY|ShiftMask,  XK_x,      spawn,    SHCMD("dmenu-power") },
     { MODKEY,            XK_s,      spawn,    SHCMD("dmenu-websearch") },
-    { MODKEY,            XK_period, spawn,    SHCMD("dmenu-emoji") },
+    { MODKEY|ShiftMask,  XK_period, spawn,    SHCMD("dmenu-emoji") },
     { MODKEY|ShiftMask,  XK_c,      spawn,    SHCMD("dmenu-calc") },
 
     /* ── Hardened quit ────────────────────────────────────────── */

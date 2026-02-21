@@ -1,0 +1,13 @@
+#!/bin/sh
+# Calculator via dmenu — result copied to clipboard
+
+answer="$(: | dmenu -p "Calc:")" || exit 1
+[ -z "$answer" ] && exit 0
+
+result="$(echo "$answer" | bc -l 2>/dev/null)" || {
+	notify-send "Calc" "Invalid expression: $answer"
+	exit 1
+}
+
+printf '%s' "$result" | xclip -selection clipboard
+notify-send "= $result" "Copied to clipboard"

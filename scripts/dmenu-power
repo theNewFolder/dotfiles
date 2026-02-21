@@ -1,0 +1,3 @@
+#!/bin/sh
+# Power menu via dmenu — alias to sysact
+exec "$(dirname "$0")/sysact"

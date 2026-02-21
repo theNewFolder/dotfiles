@@ -1,7 +1,5 @@
 #!/bin/sh
-
-# Status bar module for disk space
-# $1 should be drive mountpoint, otherwise assumed /.
+# Disk space — status2d purple (#d3869b)
 
 location=${1:-/}
 btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
@@ -9,16 +7,9 @@ btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
 [ -d "$location" ] || exit
 
 case "$btn" in
-	1) notify-send "💽 Disk space" "$(df -h --output=target,used,size)" ;;
-	3) notify-send "💽 Disk module" "\- Shows used hard drive space.
-- Click to show all disk info." ;;
+	1) notify-send "󰋊 Disk space" "$(df -h --output=target,used,size)" ;;
+	3) notify-send "󰋊 Disk" "Click: show all disk info" ;;
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-case "$location" in
-	"/home"* ) icon="🏠" ;;
-	"/mnt"* ) icon="💾" ;;
-	*) icon="🖥";;
-esac
-
-printf "%s: %s\n" "$icon" "$(df -h "$location" | awk ' /[0-9]/ {print $3 "/" $2}')"
+printf "^c#d3869b^󰋊 %s^d^" "$(df -h "$location" | awk '/[0-9]/{print $3 "/" $2}')"

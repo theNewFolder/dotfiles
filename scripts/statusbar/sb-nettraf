@@ -1,8 +1,5 @@
 #!/bin/sh
-
-# Module showing network traffic. Shows how much data has been received (RX) or
-# transmitted (TX) since the previous time this script ran. So if run every
-# second, gives network traffic per second.
+# Network traffic — status2d aqua (#8ec07c)
 
 btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
 
@@ -12,33 +9,30 @@ open_net_tool() {
 	elif command -v nload >/dev/null 2>&1; then
 		setsid -f "$TERMINAL" -e nload
 	else
-		notify-send "Network traffic" "Install bmon or nload for live traffic view."
+		notify-send "󰛶 Traffic" "Install bmon or nload for live view."
 	fi
 }
 
 case "$btn" in
 	1) open_net_tool ;;
 	2) setsid -f "$TERMINAL" -e nmtui ;;
-	3) notify-send "🌐 Network traffic module" "🔻: Traffic received
-🔺: Traffic transmitted
-- Left click opens traffic monitor
-- Middle click opens nmtui" ;;
+	3) notify-send "󰛶 Network traffic" "󰁅 RX  󰁝 TX\nClick: traffic monitor\nMiddle: nmtui" ;;
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
 update() {
-    sum=0
-    for arg; do
-        read -r i < "$arg"
-        sum=$(( sum + i ))
-    done
-    cache=/tmp/${1##*/}
-    [ -f "$cache" ] && read -r old < "$cache" || old=0
-    printf %d\\n "$sum" > "$cache"
-    printf %d\\n $(( sum - old ))
+	sum=0
+	for arg; do
+		read -r i < "$arg"
+		sum=$(( sum + i ))
+	done
+	cache=/tmp/${1##*/}
+	[ -f "$cache" ] && read -r old < "$cache" || old=0
+	printf %d\\n "$sum" > "$cache"
+	printf '%d\n' "$(( sum - old ))"
 }
 
 rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
 tx=$(update /sys/class/net/[ew]*/statistics/tx_bytes)
 
-printf "🔻%4sB 🔺%4sB\\n" $(numfmt --to=iec $rx $tx)
+printf "^c#8ec07c^󰁅%4sB 󰁝%4sB^d^" "$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"

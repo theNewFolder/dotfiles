@@ -12,13 +12,16 @@ case "$btn" in
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-vol="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
+vol="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)"
+[ -z "$vol" ] && { printf "^c#928374^󰖁 --^d^"; exit 0; }
 
 # If muted
-[ "$vol" != "${vol%\[MUTED\]}" ] && printf "^c#928374^󰖁 Mute^d^" && exit
+case "$vol" in *MUTED*) printf "^c#928374^󰖁 Mute^d^"; exit ;; esac
 
+# Extract float (e.g. "0.50") and convert to percentage
 vol="${vol#Volume: }"
-vol="$(printf "%.0f" "$(echo "$vol" | tr -d '.' | sed 's/^0*//')")"
+vol="${vol%% *}"
+vol=$(awk "BEGIN {printf \"%.0f\", $vol * 100}")
 
 if [ "${vol:-0}" -eq 0 ]; then
 	printf "^c#928374^󰖁 0%%^d^"

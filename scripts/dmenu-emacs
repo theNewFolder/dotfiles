@@ -1,0 +1,13 @@
+#!/bin/sh
+# Open Emacs buffer/command via dmenu
+
+choice="$(printf "Scratch\nOrg Agenda\nOrg Capture\nOrg Roam\nEshell\nDired" | dmenu -i -p "Emacs:")"
+
+case "$choice" in
+	Scratch) emacsclient -c -e '(switch-to-buffer "*scratch*")' ;;
+	"Org Agenda") emacsclient -c -e '(org-agenda-list)' ;;
+	"Org Capture") emacsclient -c -e '(org-capture)' ;;
+	"Org Roam") emacsclient -c -e '(org-roam-node-find)' ;;
+	Eshell) emacsclient -c -e '(eshell)' ;;
+	Dired) emacsclient -c -e '(dired "~")' ;;
+esac

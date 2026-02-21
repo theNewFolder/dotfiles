@@ -8,32 +8,34 @@ if ! command -v xbps-install >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "[1/6] Updating package index and system..."
+echo "[1/8] Updating package index and system..."
 sudo xbps-install -Su
 sudo xbps-install -Su
 
-echo "[2/6] Installing base packages..."
+echo "[2/8] Installing base packages..."
 BASE_PKGS=(
-  base-devel git curl wget
+  base-devel git curl wget stow
   xorg-minimal xinit setxkbmap xrandr xinput xsetroot
   libX11-devel libXft-devel libXinerama-devel freetype-devel fontconfig-devel libxcb-devel
   dwm dmenu st slstatus
-  dunst picom feh scrot xclip clipmenu xss-lock brightnessctl
+  dunst picom feh scrot xclip clipmenu xss-lock brightnessctl slock unclutter
   kitty
   zsh zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search
   fzf zoxide fd ripgrep
   emacs-gtk3
   mpd mpc ncmpcpp
+  pipewire wireplumber
   tlp thermald powertop
   intel-ucode linux-firmware-intel fwupd
   NetworkManager network-manager-applet
   elogind polkit dbus
-  xtools
+  xtools xcape xdotool
+  numfmt
 )
 
 sudo xbps-install -Sy "${BASE_PKGS[@]}"
 
-echo "[3/6] Enabling runit services..."
+echo "[3/8] Enabling runit services..."
 enable_service() {
   local svc="$1"
   if [ ! -d "/etc/sv/${svc}" ]; then
@@ -59,7 +61,7 @@ if [ -L /var/service/acpid ]; then
   sudo rm -f /var/service/acpid
 fi
 
-echo "[4/6] Applying T490 battery-first TLP profile (75/85)..."
+echo "[4/8] Applying T490 battery-first TLP profile (75/85)..."
 sudo mkdir -p /etc/tlp.d
 sudo tee /etc/tlp.d/10-t490-battery-first.conf > /dev/null <<'EOF'
 # ThinkPad T490 battery-first profile
@@ -74,7 +76,7 @@ RUNTIME_PM_ON_BAT=auto
 EOF
 sudo sv restart tlp || true
 
-echo "[5/7] XLibre path..."
+echo "[5/8] XLibre path..."
 if [ "${USE_XLIBRE:-0}" = "1" ]; then
   echo "  - USE_XLIBRE=1 set, running aggressive XLibre migration."
   bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/xlibre-migrate-void.sh"
@@ -84,10 +86,10 @@ else
   echo "      bash ~/dotfiles/scripts/xlibre-migrate-void.sh"
 fi
 
-echo "[6/7] Post-install sanity..."
+echo "[6/8] Post-install sanity..."
 sudo xbps-reconfigure -fa
 
-echo "[7/8] Linking zsh profile..."
+echo "[7/8] Linking zsh defaults..."
 if [ -f "${ROOT}/zsh/.zshrc" ]; then
   ln -sf "${ROOT}/zsh/.zshrc" "${HOME}/.zshrc"
   echo "  - linked ~/.zshrc"

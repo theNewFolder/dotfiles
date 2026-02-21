@@ -1,6 +1,22 @@
-#!/usr/bin/env bash
-set -euo pipefail
-if [ -r /sys/class/thermal/thermal_zone0/temp ]; then
-  t=$(cat /sys/class/thermal/thermal_zone0/temp)
-  printf "󰔏 %s°C" "$((t / 1000))"
+#!/bin/sh
+# Temperature — status2d red (#fb4934), dynamic color by temp
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send "󰔏 Thermals" "$(paste /sys/class/thermal/thermal_zone*/type /sys/class/thermal/thermal_zone*/temp 2>/dev/null | awk '{printf "%s: %.0f°C\n", $1, $2/1000}')" ;;
+	3) notify-send "󰔏 Temperature" "Click: show all zones" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+[ -r /sys/class/thermal/thermal_zone0/temp ] || exit 0
+read -r raw_temp < /sys/class/thermal/thermal_zone0/temp
+t=$((raw_temp / 1000))
+
+if [ "$t" -gt 80 ]; then col="#fb4934"
+elif [ "$t" -gt 60 ]; then col="#fe8019"
+elif [ "$t" -gt 40 ]; then col="#fabd2f"
+else col="#b8bb26"
 fi
+
+printf "^c%s^󰔏 %d°C^d^" "$col" "$t"

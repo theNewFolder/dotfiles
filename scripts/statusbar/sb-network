@@ -1,8 +1,17 @@
-#!/usr/bin/env bash
-set -euo pipefail
-if ip route | grep -q "^default"; then
-  iface=$(ip route | awk '/^default/{print $5; exit}')
-  printf "NET %s" "$iface"
+#!/bin/sh
+# Network interface — status2d blue (#83a598)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send "󰛳 Network" "$(ip -br addr show up 2>/dev/null)" ;;
+	3) notify-send "󰛳 Network" "Click: show interfaces" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+iface="$(ip route show default 2>/dev/null | awk '{print $5; exit}')"
+if [ -n "$iface" ]; then
+	printf "^c#83a598^󰛳 %s^d^" "$iface"
 else
-  printf "NET down"
+	printf "^c#928374^󰲛 Down^d^"
 fi

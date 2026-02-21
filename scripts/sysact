@@ -1,0 +1,13 @@
+#!/bin/sh
+# System action menu via dmenu
+
+choice="$(printf "🔒 Lock\n🚪 Logout\n🔄 Reboot\n⏻ Shutdown\n💤 Suspend\n📺 Display off" | dmenu -i -p "Action:")"
+
+case "$choice" in
+	*Lock) slock ;;
+	*Logout) pkill -TERM dwm ;;
+	*Reboot) sudo reboot ;;
+	*Shutdown) sudo poweroff ;;
+	*Suspend) sudo zzz ;;
+	*Display*) xset dpms force off ;;
+esac

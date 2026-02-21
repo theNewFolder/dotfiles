@@ -1,0 +1,16 @@
+#!/bin/sh
+# Web search via dmenu
+
+BROWSER="${BROWSER:-firefox}"
+ENGINE="${SEARCH_ENGINE:-https://duckduckgo.com/?q=}"
+
+query="$(: | dmenu -p "Search:")" || exit 1
+[ -z "$query" ] && exit 0
+
+# If it looks like a URL, open directly
+case "$query" in
+	*.*.*|http://*|https://*) url="$query" ;;
+	*) url="${ENGINE}$(printf '%s' "$query" | tr ' ' '+')" ;;
+esac
+
+setsid -f "$BROWSER" "$url" >/dev/null 2>&1

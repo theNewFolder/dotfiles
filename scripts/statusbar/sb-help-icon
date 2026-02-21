@@ -28,9 +28,8 @@ open_guide() {
 case "$btn" in
 	1) open_guide ;;
 	2) restartwm ;;
-	3) notify-send "❓ Help module" "\- Left click to open LARBS guide.
-- Middle click to refresh window manager." ;;
+	3) notify-send "󰋖 Help" "Click: open guide\nMiddle: restart WM" ;;
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-echo "❓"
+printf "^c#d3869b^󰋖^d^"

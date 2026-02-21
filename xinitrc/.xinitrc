@@ -3,6 +3,9 @@
 
 [ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources"
 export PATH="$HOME/dotfiles/scripts/statusbar:$HOME/dotfiles/scripts:$HOME/.local/bin/statusbar:$HOME/.local/bin:$PATH"
+export TERMINAL="${TERMINAL:-kitty}"
+export EDITOR="${EDITOR:-emacsclient -c -a emacs}"
+export BROWSER="${BROWSER:-firefox}"
 
 # Keyboard remaps (LARBS-style): caps/menu behavior + repeat tuning
 command -v remaps >/dev/null && remaps &
@@ -32,7 +35,7 @@ runsvdir "$SVDIR" &
 command -v clipmenud >/dev/null && clipmenud &
 command -v dunst >/dev/null && dunst &
 command -v unclutter >/dev/null && unclutter &
-command -v mpd >/dev/null && mpd &
+command -v mpd >/dev/null && mpd >/dev/null 2>&1 &
 command -v dwmblocks >/dev/null && dwmblocks &
 
 # Compositor + wallpaper

@@ -20,7 +20,7 @@ getprecipchance() {
 	echo "$weatherdata" | sed '16q;d' |    # Extract line 16 from file
 		grep -wo "[0-9]*%" |           # Find a sequence of digits followed by '%'
 		sort -rn |                     # Sort in descending order
-		head -1q                       # Extract first line
+		head -1                        # Extract first line
 }
 
 getdailyhighlow() {
@@ -38,10 +38,10 @@ readfile() {
 
 showweather() {
 	if ! readfile; then
-		printf "☔-- 🥶--° 🌞--°\n"
+		printf "^c#83a598^󰖗 -- 󰜗 --° 󰖨 --°^d^\n"
 		return
 	fi
-	printf "☔%s 🥶%s° 🌞%s°\n" "$(getprecipchance)" $(getdailyhighlow)
+	printf "^c#83a598^󰖗 %s 󰜗 %s° 󰖨 %s°^d^\n" "$(getprecipchance)" $(getdailyhighlow)
 }
 
 case "$btn" in
@@ -60,12 +60,7 @@ case "$btn" in
 		fi
 		;;
 	4|5) getforecast >/dev/null 2>&1 && pkill -RTMIN+5 "${STATUSBAR:-dwmblocks}" ;;
-	3) notify-send "🌈 Weather module" "\- Left click for full forecast.
-- Middle click to update forecast.
-- Scroll to force refresh.
-☔: Chance of rain/snow
-🥶: Daily low
-🌞: Daily high" ;;
+	3) notify-send "󰖐 Forecast" "Click: full forecast\nMiddle: refresh\nScroll: force refresh\n󰖗 Rain/snow chance\n󰜗 Daily low\n󰖨 Daily high" ;;
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 

@@ -58,7 +58,7 @@
   (setq display-line-numbers-type 'relative)
   (column-number-mode 1)
   (global-auto-revert-mode 1)
-  (set-face-attribute 'default nil :family "Terminus" :height 140))
+  (set-face-attribute 'default nil :family "DankMono Nerd Font" :height 140))
 
 ;;; Theme
 (use-package gruvbox-theme
@@ -149,8 +149,9 @@
   (org-roam-db-autosync-mode 1))
 
 ;;; Daemon-first workflow
+;; Only start server when NOT running as daemon (daemon handles it automatically).
 (use-package server
   :straight (:type built-in)
   :config
-  (unless (server-running-p)
+  (unless (or (daemonp) (server-running-p))
     (server-start)))

@@ -5,10 +5,10 @@ Void Linux productivity setup for ThinkPad T490.
 ## Locked choices
 
 - strict X11 `dwm`
-- 5-patch budget (`pertag`, `actualfullscreen`, `autostart`, `restartsig`, `swallow`)
-- `dwmblocks` status bar
+- source-built patch set: `cfacts+vanitygaps`, `pertag`, `autostart`, `hide_vacant_tags`, `actualfullscreen`, `movestack`, `barpadding`, `statuscmd`, `alpha`, `status2d`
+- `dwmblocks` status bar with `status2d` color markup
 - `dmenu` only launcher
-- `st` primary + `kitty` fallback
+- `kitty` primary + `st` fallback
 - vanilla Emacs (`use-package`, Evil, Org, Consult/Corfu)
 - battery-first profile with TLP threshold `75/85`
 - Gruvbox Dark Hard with vibrant accents

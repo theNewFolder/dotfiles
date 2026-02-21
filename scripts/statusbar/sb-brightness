@@ -1,51 +1,42 @@
 #!/bin/sh
+# Brightness — status2d yellow (#fabd2f)
 
-# backlight source (first available)
 set -- /sys/class/backlight/*
 if [ ! -e "$1" ]; then
-	echo "💡 --"
+	printf "^c#928374^󰃞 --^d^"
 	exit 0
 fi
 bl="$1"
 
-curr_brightness="$(cat "$bl/brightness" 2>/dev/null || echo 0)"
-max_brightness="$(cat "$bl/max_brightness" 2>/dev/null || echo 1)"
+read -r curr_brightness < "$bl/brightness" 2>/dev/null || curr_brightness=0
+read -r max_brightness < "$bl/max_brightness" 2>/dev/null || max_brightness=1
 [ "$max_brightness" -gt 0 ] || max_brightness=1
-
-# brightness percentage
 brightness_per=$((100 * curr_brightness / max_brightness))
+
 btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
 
 adjust_brightness() {
-	step="$1"
 	if command -v brightnessctl >/dev/null 2>&1; then
-		brightnessctl set "${step}%" >/dev/null 2>&1
+		brightnessctl set "${1}%" >/dev/null 2>&1
 	elif command -v xbacklight >/dev/null 2>&1; then
-		case "$step" in
-			+*) xbacklight -inc "${step#+}" ;;
-			-*) xbacklight -dec "${step#-}" ;;
+		case "$1" in
+			+*) xbacklight -inc "${1#+}" ;;
+			-*) xbacklight -dec "${1#-}" ;;
 		esac
 	fi
 }
 
 case "$btn" in
-    1) 
-        ;;
-    2)
-        notify-send "Brightness" "Current: ${brightness_per}%"
-        ;;
-    3) 
-        notify-send "💡 Brightness module" "\- Shows current brightness level ☀️." 
-        ;;
-    4)
-        adjust_brightness +5
-        ;;
-    5)
-        adjust_brightness -5
-        ;;
-    6) 
-        setsid -f "$TERMINAL" -e "$EDITOR" "$0"
-        ;;
+	1) notify-send "󰃠 Brightness" "Current: ${brightness_per}%" ;;
+	3) notify-send "󰃠 Brightness" "Click: show level\nScroll: adjust" ;;
+	4) adjust_brightness +5 ;;
+	5) adjust_brightness -5 ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-echo "💡 ${brightness_per}%"
+if [ "$brightness_per" -gt 70 ]; then icon="󰃠"
+elif [ "$brightness_per" -gt 30 ]; then icon="󰃟"
+else icon="󰃞"
+fi
+
+printf "^c#fabd2f^%s %d%%^d^" "$icon" "$brightness_per"

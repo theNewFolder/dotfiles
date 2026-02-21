@@ -1,3 +1,12 @@
-#!/usr/bin/env bash
-set -euo pipefail
-date '+󰥔 %a %d %b %H:%M'
+#!/bin/sh
+# Date — status2d yellow (#fabd2f)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send "󰃭 Calendar" "$(cal | sed "s/\<$(date +'%e' | tr -d ' ')\>/<b><span color='#fb4934'>&<\/span><\/b>/")" ;;
+	3) notify-send "󰃭 Date" "Click: calendar" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+printf "^c#fabd2f^󰃭 %s^d^" "$(date '+%a %d %b')"
