@@ -1,0 +1,14 @@
+dwm repo: https://git.suckless.org/dwm
+dwm ref: rolling (origin/HEAD)
+dwm commit: c3dd6a829b3f
+dmenu repo: https://git.suckless.org/dmenu
+dmenu ref: rolling (origin/HEAD)
+dmenu commit: 7175c4880bac
+st repo: https://git.suckless.org/st
+st ref: rolling (origin/HEAD)
+st commit: 688f70add0d1
+dwmblocks repo: https://github.com/torrinfail/dwmblocks.git
+dwmblocks ref: rolling (origin/HEAD)
+dwmblocks commit: 8cedd2206840
+patch set: cfacts+vanitygaps, pertag_with_sel, autostart, hide_vacant_tags, actualfullscreen, movestack, barpadding, statuscmd
+generated at: 2026-02-20T22:39:54Z

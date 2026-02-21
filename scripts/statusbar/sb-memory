@@ -1,0 +1,13 @@
+#!/bin/sh
+# RAM usage — status2d orange (#fe8019)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send "󰍛 Memory hogs" "$(ps axch -o cmd,%mem | awk '{cmd[$1]+=$2} END {for (i in cmd) print i, cmd[i]}' | sort -nrk2 | head)" ;;
+	2) setsid -f "$TERMINAL" -e htop ;;
+	3) notify-send "󰍛 Memory" "Click: show hogs\nMiddle: htop" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+free --mebi | awk 'NR==2{printf "^c#fe8019^󰍛 %.1fG^d^", $3/1024}'

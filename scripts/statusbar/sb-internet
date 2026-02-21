@@ -1,0 +1,37 @@
+#!/bin/sh
+# WiFi/Ethernet — status2d blue (#83a598)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+toggle_wifi() {
+	if ! command -v nmcli >/dev/null 2>&1; then
+		notify-send "Wi-Fi toggle" "nmcli not installed."
+		return
+	fi
+	state="$(nmcli radio wifi 2>/dev/null | awk 'NR==1{print $1}')"
+	if [ "$state" = "enabled" ]; then
+		nmcli radio wifi off
+		notify-send "Wi-Fi" "Disabled."
+	else
+		nmcli radio wifi on
+		notify-send "Wi-Fi" "Enabled."
+	fi
+	pkill -RTMIN+4 "${STATUSBAR:-dwmblocks}"
+}
+
+case "$btn" in
+	1) setsid -f "$TERMINAL" -e nmtui; pkill -RTMIN+4 "${STATUSBAR:-dwmblocks}" ;;
+	2) toggle_wifi ;;
+	3) notify-send "󰖩 Network" "Click: nmtui\nMiddle: toggle wifi" ;;
+	4|5) notify-send "󰖩 Interfaces" "$(ip -br addr show up 2>/dev/null)" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+if [ "$(cat /sys/class/net/w*/operstate 2>/dev/null)" = 'up' ]; then
+	quality=$(awk '/^\s*w/{print int($3 * 100 / 70)}' /proc/net/wireless 2>/dev/null)
+	printf "^c#83a598^󰖩 %s%%^d^" "${quality:-??}"
+elif [ "$(cat /sys/class/net/e*/operstate 2>/dev/null)" = 'up' ]; then
+	printf "^c#83a598^󰈀 Eth^d^"
+else
+	printf "^c#928374^󰤭 Off^d^"
+fi

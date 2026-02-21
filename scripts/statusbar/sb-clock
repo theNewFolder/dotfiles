@@ -1,0 +1,13 @@
+#!/bin/sh
+# Clock — status2d yellow (#fabd2f)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send "󰥔 Calendar" "$(cal | sed "s/\<$(date +'%e' | tr -d ' ')\>/<b><span color='#fb4934'>&<\/span><\/b>/")"  ;;
+	2) command -v calcurse >/dev/null && setsid -f "$TERMINAL" -e calcurse ;;
+	3) notify-send "󰥔 Clock" "Click: calendar\nMiddle: calcurse" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+printf "^c#fabd2f^󰥔 %s^d^" "$(date '+%a %d %b %I:%M %p')"

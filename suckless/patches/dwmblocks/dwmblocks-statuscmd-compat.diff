@@ -1,0 +1,8 @@
+diff --git a/dwmblocks.c b/dwmblocks.c
+--- a/dwmblocks.c
++++ b/dwmblocks.c
+@@ -64,1 +64,3 @@ void getcmd(const Block *block, char *output)
+-	strcpy(tempstatus, block->icon);
++	if (block->signal)
++		tempstatus[0] = block->signal;
++	strcpy(tempstatus + (block->signal ? 1 : 0), block->icon);

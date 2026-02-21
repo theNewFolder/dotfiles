@@ -1,0 +1,97 @@
+# Yazi — Gruvbox Baby Ultra-Dark
+
+[manager]
+cwd = { fg = "#fe8019" }
+hovered = { fg = "#fbf1c7", bg = "#3c3836" }
+preview_hovered = { underline = true }
+find_keyword = { fg = "#fabd2f", bold = true }
+find_position = { fg = "#d3869b", italic = true }
+marker_selected = { fg = "#b8bb26", bg = "#b8bb26" }
+marker_copied = { fg = "#fabd2f", bg = "#fabd2f" }
+marker_cut = { fg = "#fb4934", bg = "#fb4934" }
+tab_active = { fg = "#0d0e0f", bg = "#fe8019" }
+tab_inactive = { fg = "#a89984", bg = "#282828" }
+tab_width = 1
+border_symbol = "│"
+border_style = { fg = "#504945" }
+count_copied = { fg = "#0d0e0f", bg = "#fabd2f" }
+count_cut = { fg = "#0d0e0f", bg = "#fb4934" }
+count_selected = { fg = "#0d0e0f", bg = "#b8bb26" }
+
+[status]
+separator_open = ""
+separator_close = ""
+separator_style = { fg = "#504945", bg = "#0d0e0f" }
+mode_normal = { fg = "#0d0e0f", bg = "#83a598", bold = true }
+mode_select = { fg = "#0d0e0f", bg = "#b8bb26", bold = true }
+mode_unset = { fg = "#0d0e0f", bg = "#d3869b", bold = true }
+progress_label = { fg = "#fbf1c7", bold = true }
+progress_normal = { fg = "#83a598", bg = "#504945" }
+progress_error = { fg = "#fb4934", bg = "#504945" }
+permissions_t = { fg = "#83a598" }
+permissions_r = { fg = "#fabd2f" }
+permissions_w = { fg = "#fb4934" }
+permissions_x = { fg = "#b8bb26" }
+permissions_s = { fg = "#928374" }
+
+[input]
+border = { fg = "#fe8019" }
+title = {}
+value = {}
+selected = { reversed = true }
+
+[select]
+border = { fg = "#83a598" }
+active = { fg = "#d3869b" }
+inactive = {}
+
+[tasks]
+border = { fg = "#83a598" }
+title = {}
+hovered = { underline = true }
+
+[which]
+mask = { bg = "#3c3836" }
+cand = { fg = "#8ec07c" }
+rest = { fg = "#928374" }
+desc = { fg = "#d3869b" }
+separator = "  "
+separator_style = { fg = "#504945" }
+
+[help]
+on = { fg = "#d3869b" }
+run = { fg = "#8ec07c" }
+desc = { fg = "#a89984" }
+hovered = { bg = "#3c3836", bold = true }
+footer = { fg = "#0d0e0f", bg = "#ebdbb2" }
+
+[filetype]
+rules = [
+  { mime = "image/*", fg = "#d3869b" },
+  { mime = "video/*", fg = "#fabd2f" },
+  { mime = "audio/*", fg = "#8ec07c" },
+  { mime = "application/zip", fg = "#fb4934" },
+  { mime = "application/gzip", fg = "#fb4934" },
+  { mime = "application/x-tar", fg = "#fb4934" },
+  { mime = "application/x-bzip2", fg = "#fb4934" },
+  { mime = "application/x-xz", fg = "#fb4934" },
+  { mime = "application/x-7z-compressed", fg = "#fb4934" },
+  { mime = "application/x-rar", fg = "#fb4934" },
+  { mime = "application/pdf", fg = "#fe8019" },
+  { name = "*.md", fg = "#83a598" },
+  { name = "*.rs", fg = "#fe8019" },
+  { name = "*.py", fg = "#fabd2f" },
+  { name = "*.js", fg = "#fabd2f" },
+  { name = "*.ts", fg = "#83a598" },
+  { name = "*.lua", fg = "#83a598" },
+  { name = "*.sh", fg = "#b8bb26" },
+  { name = "*.toml", fg = "#a89984" },
+  { name = "*.yml", fg = "#a89984" },
+  { name = "*.yaml", fg = "#a89984" },
+  { name = "*.json", fg = "#a89984" },
+  { name = "*.c", fg = "#83a598" },
+  { name = "*.h", fg = "#83a598" },
+  { name = "*.go", fg = "#8ec07c" },
+  { name = "*", fg = "#ebdbb2" },
+  { name = "*/", fg = "#fe8019" },
+]

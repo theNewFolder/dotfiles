@@ -1,0 +1,98 @@
+// ╔══════════════════════════════════════════════╗
+// ║  CURSOR LAYOUT KEYBINDINGS                 ║
+// ║  T490 Optimized - Ghostty Ready             ║
+// ╚══════════════════════════════════════════════╝
+[
+  // === LAYOUT TOGGLES ===
+  {
+    "key": "ctrl+shift+m",
+    "command": "workbench.action.toggleEditorWidths",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+z",
+    "command": "workbench.action.toggleZenMode"
+  },
+  {
+    "key": "ctrl+shift+b",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "ctrl+shift+j",
+    "command": "workbench.action.togglePanel"
+  },
+  {
+    "key": "ctrl+shift+oem_comma",
+    "command": "workbench.action.toggleMenuBar"
+  },
+  // === EDITOR GROUP NAVIGATION ===
+  {
+    "key": "ctrl+shift+h",
+    "command": "workbench.action.focusLeftGroup"
+  },
+  {
+    "key": "ctrl+shift+l",
+    "command": "workbench.action.focusRightGroup"
+  },
+  {
+    "key": "ctrl+shift+k",
+    "command": "workbench.action.focusAboveGroup"
+  },
+  {
+    "key": "ctrl+shift+j",
+    "command": "workbench.action.focusBelowGroup"
+  },
+  // === SPLIT EDITOR COMMANDS ===
+  {
+    "key": "ctrl+k ctrl+shift+down",
+    "command": "workbench.action.splitEditorDown"
+  },
+  {
+    "key": "ctrl+k ctrl+shift+right",
+    "command": "workbench.action.splitEditorRight"
+  },
+  {
+    "key": "ctrl+w v",
+    "command": "workbench.action.splitEditorRight",
+    "when": "editorTextFocus && vim.mode != 'Insert'"
+  },
+  {
+    "key": "ctrl+w s",
+    "command": "workbench.action.splitEditorDown",
+    "when": "editorTextFocus && vim.mode != 'Insert'"
+  },
+  // === PANEL NAVIGATION ===
+  {
+    "key": "ctrl+shift+d",
+    "command": "workbench.view.debug"
+  },
+  {
+    "key": "ctrl+shift+u",
+    "command": "workbench.view.output"
+  },
+  {
+    "key": "ctrl+shift+p",
+    "command": "workbench.action.showCommands"
+  },
+  // === FAST LAYOUT PRESETS ===
+  {
+    "key": "ctrl+alt+1",
+    "command": "workbench.action.editorLayoutSingle"
+  },
+  {
+    "key": "ctrl+alt+2",
+    "command": "workbench.action.editorLayoutTwoColumns"
+  },
+  {
+    "key": "ctrl+alt+3",
+    "command": "workbench.action.editorLayoutThreeColumns"
+  },
+  {
+    "key": "ctrl+alt+4",
+    "command": "workbench.action.editorLayoutTwoRows"
+  },
+  {
+    "key": "ctrl+alt+5",
+    "command": "workbench.action.editorLayoutTwoByTwoGrid"
+  }
+]

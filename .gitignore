@@ -1,0 +1,22 @@
+# Secrets
+.secrets/
+**/*_api_key
+**/*-api-key.txt
+
+# Emacs / build caches
+.cache/
+*.elc
+straight/
+eln-cache/
+
+# System noise
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Backups (contain embedded git repos)
+backup/
+
+# Local experiments
+scratch/

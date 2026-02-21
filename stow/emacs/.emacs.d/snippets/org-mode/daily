@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: Daily note header
+# key: day
+# --
+#+title: `(format-time-string "%Y-%m-%d %A")`
+#+filetags: :daily:
+#+startup: showall
+
+* Intentions
+The ONE thing: $1
+
+* Log
+
+** `(format-time-string "%H:%M")` $0
+
+* Tasks [/]
+
+* Notes

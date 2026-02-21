@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: Reference/literature note
+# key: ref
+# --
+* Source
+
+- Author: $1
+- Title: $2
+- URL: $3
+
+* Summary
+
+$0
+
+* Key Ideas
+
+-
+
+* My Thoughts
+

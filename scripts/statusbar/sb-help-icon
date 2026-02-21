@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# The clickable help menu. Middle click to restart wm.
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+if pidof dwm >/dev/null 2>&1; then
+	READMEFILE="/usr/local/share/dwm/larbs.mom"
+	restartwm() { pkill -HUP dwm; }
+else
+	restartwm() { i3 restart; }
+fi
+
+open_guide() {
+	guide="${READMEFILE:-${XDG_DATA_HOME:-$HOME/.local/share}/larbs/readme.mom}"
+	if [ ! -f "$guide" ]; then
+		notify-send "Help" "Guide not found: $guide"
+		return
+	fi
+
+	if command -v groff >/dev/null 2>&1 && command -v zathura >/dev/null 2>&1; then
+		groff -mom "$guide" -Tpdf | zathura -
+	else
+		setsid -f "$TERMINAL" -e less "$guide"
+	fi
+}
+
+case "$btn" in
+	1) open_guide ;;
+	2) restartwm ;;
+	3) notify-send "❓ Help module" "\- Left click to open LARBS guide.
+- Middle click to refresh window manager." ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+echo "❓"

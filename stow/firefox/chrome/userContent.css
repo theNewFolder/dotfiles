@@ -1,0 +1,30 @@
+/* ═══════════════════════════════════════════════
+   Firefox Content — Gruvbox Baby
+   Override internal pages (about:*, newtab, etc.)
+   ═══════════════════════════════════════════════ */
+
+/* ── about:blank / new tab ── */
+@-moz-document url("about:blank"), url("about:newtab"), url("about:home") {
+  body {
+    background-color: #0d0e0f !important;
+  }
+}
+
+/* ── about:config, about:preferences ── */
+@-moz-document url-prefix("about:") {
+  :root {
+    --in-content-page-background: #0d0e0f !important;
+    --in-content-box-background: #282828 !important;
+    --in-content-text-color: #ebdbb2 !important;
+    --in-content-border-color: #504945 !important;
+    --in-content-primary-button-background: #fe8019 !important;
+    --in-content-primary-button-text-color: #0d0e0f !important;
+    --in-content-focus-outline-color: #fe8019 !important;
+  }
+}
+
+/* ── Thin scrollbars globally ── */
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: #504945 #0d0e0f !important;
+}

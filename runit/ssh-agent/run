@@ -1,0 +1,5 @@
+#!/bin/sh
+# Write SSH_AUTH_SOCK so other processes can find it
+export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+rm -f "$SSH_AUTH_SOCK"
+exec ssh-agent -D -a "$SSH_AUTH_SOCK" 2>&1

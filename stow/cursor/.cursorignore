@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+vendor/
+bower_components/
+
+# Build artifacts
+dist/
+build/
+out/
+target/
+*.min.js
+*.min.css
+__pycache__/
+*.pyc
+*.o
+*.so
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+secrets.json
+credentials.*
+
+# Logs and temp
+*.log
+logs/
+*.tmp
+.DS_Store
+
+# Large assets
+*.mp4
+*.mkv
+*.iso
+*.tar.gz
+*.zip
+
+# VCS internals
+.git/
+
+# Suckless build artifacts
+suckless/src/*/config.h.orig
+suckless/src/*/config.h.rej
+suckless/src/*/*.o
+suckless/src/*/dwm
+suckless/src/*/st
+suckless/src/*/dmenu
+
+# Cache
+.cache/
+.zig-cache/
+.next/
+.nuxt/
+coverage/

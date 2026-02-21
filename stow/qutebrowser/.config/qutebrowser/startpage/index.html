@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Start</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d0e0f;
+    color: #a89984;
+    font-family: 'DankMono Nerd Font', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  /* ── Search ─────────────────────────────────── */
+  form { width: 100%; max-width: 480px; margin-bottom: 2.5rem; }
+  input {
+    width: 100%;
+    background: #282828;
+    border: 1px solid #504945;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    color: #ebdbb2;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+  }
+  input::placeholder { color: #665c54; }
+  input:focus { border-color: #fe8019; }
+
+  /* ── Tips Grid ──────────────────────────────── */
+  .tips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+    max-width: 680px;
+    width: 100%;
+  }
+  .tips section h3 {
+    color: #665c54;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .tips dl { font-size: 0.8rem; line-height: 1.6; }
+  .tips dt {
+    display: inline;
+    color: #fe8019;
+    font-weight: bold;
+  }
+  .tips dd {
+    display: inline;
+    color: #a89984;
+    margin: 0;
+  }
+  .tips dd::after { content: '\a'; white-space: pre; }
+
+  /* ── Help hint ──────────────────────────────── */
+  .hint {
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    color: #504945;
+  }
+  .hint kbd {
+    background: #282828;
+    border: 1px solid #504945;
+    border-radius: 3px;
+    padding: 0.1em 0.4em;
+    color: #928374;
+    font-family: inherit;
+  }
+
+  /* ── Overlay ────────────────────────────────── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(13,14,15,0.95);
+    z-index: 10;
+    overflow-y: auto;
+    padding: 3rem 2rem;
+  }
+  .overlay.show { display: flex; flex-direction: column; align-items: center; }
+  .overlay h2 {
+    color: #ebdbb2;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .overlay .cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 900px;
+    width: 100%;
+  }
+  .overlay section h3 {
+    color: #fe8019;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid #3c3836;
+    padding-bottom: 0.3rem;
+  }
+  .overlay dl { font-size: 0.78rem; line-height: 1.7; }
+  .overlay dt {
+    display: inline;
+    color: #fabd2f;
+    font-weight: bold;
+    min-width: 5em;
+  }
+  .overlay dd {
+    display: inline;
+    color: #ebdbb2;
+    margin: 0;
+  }
+  .overlay dd::after { content: '\a'; white-space: pre; }
+  .overlay .close-hint {
+    margin-top: 2rem;
+    color: #504945;
+    font-size: 0.7rem;
+  }
+
+  /* ── Search prefixes ────────────────────────── */
+  .search-tips {
+    margin-top: 1.5rem;
+    font-size: 0.7rem;
+    color: #504945;
+    max-width: 480px;
+    text-align: center;
+    line-height: 1.8;
+  }
+  .search-tips span { color: #83a598; }
+</style>
+</head>
+<body>
+
+  <form action="https://www.perplexity.ai/search" method="get">
+    <input type="text" name="q" placeholder="search (perplexity)" autofocus>
+  </form>
+
+  <div class="tips">
+    <section>
+      <h3>navigate</h3>
+      <dl>
+        <dt>j/k</dt><dd>scroll down/up</dd>
+        <dt>H/L</dt><dd>back / forward</dd>
+        <dt>J/K</dt><dd>prev / next tab</dd>
+        <dt>gg/G</dt><dd>top / bottom</dd>
+        <dt>o/O</dt><dd>open url / new tab</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>actions</h3>
+      <dl>
+        <dt>f/F</dt><dd>hint links / new tab</dd>
+        <dt>d</dt><dd>close tab</dd>
+        <dt>r</dt><dd>reload</dd>
+        <dt>yy</dt><dd>yank url</dd>
+        <dt>/</dt><dd>search in page</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>custom</h3>
+      <dl>
+        <dt>,m</dt><dd>play in mpv</dd>
+        <dt>,p</dt><dd>qute-pass</dd>
+        <dt>,d</dt><dd>toggle dark mode</dd>
+        <dt>xx</dt><dd>toggle tab bar</dd>
+        <dt>xb</dt><dd>toggle status bar</dd>
+      </dl>
+    </section>
+  </div>
+
+  <div class="search-tips">
+    <span>g</span> google &middot;
+    <span>dd</span> duckduckgo &middot;
+    <span>gh</span> github &middot;
+    <span>yt</span> youtube &middot;
+    <span>aw</span> archwiki &middot;
+    <span>wp</span> wikipedia &middot;
+    <span>pkg</span> void packages
+  </div>
+
+  <p class="hint">press <kbd>?</kbd> for full cheatsheet</p>
+
+  <!-- ── Full cheatsheet overlay ──────────────── -->
+  <div class="overlay" id="overlay">
+    <h2>qutebrowser &amp; dwm cheatsheet</h2>
+    <div class="cols">
+
+      <section>
+        <h3>qutebrowser — navigation</h3>
+        <dl>
+          <dt>h/j/k/l</dt><dd>scroll left/down/up/right</dd>
+          <dt>gg / G</dt><dd>page top / bottom</dd>
+          <dt>Ctrl-d/u</dt><dd>half page down/up</dd>
+          <dt>H / L</dt><dd>history back / forward</dd>
+          <dt>J / K</dt><dd>prev tab / next tab</dd>
+          <dt>o / O</dt><dd>open url / in new tab</dd>
+          <dt>go / gO</dt><dd>edit url / in new tab</dd>
+          <dt>r / R</dt><dd>reload / force reload</dd>
+          <dt>[[  /  ]]</dt><dd>prev page / next page</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>qutebrowser — actions</h3>
+        <dl>
+          <dt>f / F</dt><dd>follow hint / in new tab</dd>
+          <dt>;b</dt><dd>hint + open in bg tab</dd>
+          <dt>d</dt><dd>close tab</dd>
+          <dt>u</dt><dd>undo close tab</dd>
+          <dt>yy</dt><dd>yank url to clipboard</dd>
+          <dt>pp / Pp</dt><dd>paste url / new tab</dd>
+          <dt>/  n  N</dt><dd>search / next / prev</dd>
+          <dt>:</dt><dd>command mode</dd>
+          <dt>i</dt><dd>insert mode</dd>
+          <dt>v</dt><dd>caret mode (select text)</dd>
+          <dt>Esc</dt><dd>back to normal mode</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>qutebrowser — custom</h3>
+        <dl>
+          <dt>,m</dt><dd>play url in mpv</dd>
+          <dt>,M</dt><dd>hint link → mpv</dd>
+          <dt>;M</dt><dd>rapid hint → mpv</dd>
+          <dt>,d</dt><dd>toggle dark mode</dd>
+          <dt>,e</dt><dd>open in nvim (kitty)</dd>
+          <dt>,p / ,P</dt><dd>qute-pass / pw only</dd>
+          <dt>xx</dt><dd>toggle tab bar</dd>
+          <dt>xb</dt><dd>toggle status bar</dd>
+        </dl>
+        <h3 style="margin-top:1rem">search prefixes</h3>
+        <dl>
+          <dt>g</dt><dd>google</dd>
+          <dt>dd</dt><dd>duckduckgo</dd>
+          <dt>gh</dt><dd>github</dd>
+          <dt>yt</dt><dd>youtube</dd>
+          <dt>aw</dt><dd>archwiki</dd>
+          <dt>wp</dt><dd>wikipedia</dd>
+          <dt>vw</dt><dd>void manpages</dd>
+          <dt>pkg</dt><dd>void packages</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>dwm — windows</h3>
+        <dl>
+          <dt>Mod-j/k</dt><dd>focus next/prev</dd>
+          <dt>Mod-S-j/k</dt><dd>move in stack</dd>
+          <dt>Mod-h/l</dt><dd>resize master</dd>
+          <dt>Mod-Return</dt><dd>swap master</dd>
+          <dt>Mod-S-Return</dt><dd>spawn terminal</dd>
+          <dt>Mod-S-c</dt><dd>close window</dd>
+          <dt>Mod-S-q</dt><dd>quit dwm</dd>
+          <dt>Mod-b</dt><dd>toggle bar</dd>
+          <dt>Mod-Space</dt><dd>toggle float</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>dwm — layouts</h3>
+        <dl>
+          <dt>Mod-t</dt><dd>tile</dd>
+          <dt>Mod-f</dt><dd>monocle</dd>
+          <dt>Mod-i/d</dt><dd>inc/dec master</dd>
+          <dt>Mod-1..9</dt><dd>switch tag</dd>
+          <dt>Mod-S-1..9</dt><dd>move to tag</dd>
+          <dt>Mod-0</dt><dd>view all tags</dd>
+          <dt>Mod-Tab</dt><dd>prev tag</dd>
+          <dt>Mod-,/.</dt><dd>focus monitor</dd>
+          <dt>Mod-S-,/.</dt><dd>send to monitor</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>dwm — custom</h3>
+        <dl>
+          <dt>Mod-d</dt><dd>dmenu</dd>
+          <dt>Mod-p</dt><dd>passmenu</dd>
+          <dt>Mod-w</dt><dd>browser</dd>
+          <dt>Mod-e</dt><dd>emacs</dd>
+          <dt>Mod-S-l</dt><dd>lock screen</dd>
+          <dt>PrintScr</dt><dd>screenshot</dd>
+          <dt>XF86Audio*</dt><dd>volume/mute</dd>
+          <dt>XF86Bright*</dt><dd>brightness</dd>
+        </dl>
+      </section>
+
+    </div>
+    <p class="close-hint">press <kbd>?</kbd> or <kbd>Esc</kbd> to close</p>
+  </div>
+
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === '?' || (e.key === 'Escape' && document.getElementById('overlay').classList.contains('show'))) {
+    document.getElementById('overlay').classList.toggle('show');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+---
+description: Language-specific code style preferences
+globs:
+alwaysApply: true
+---
+
+# Language-Specific Style
+
+## Shell (bash/zsh/dash)
+- Use `#!/bin/sh` for portable scripts, `#!/bin/bash` only when bash-isms needed
+- Quote all variables: `"$var"` not `$var`
+- Use `[[ ]]` in bash, `[ ]` in sh
+- Prefer `command -v` over `which`
+
+## Python
+- Type hints for all function signatures
+- f-strings over .format() or %
+- dataclasses over plain dicts for structured data
+- pathlib over os.path
+
+## C (suckless style)
+- Tabs for indentation
+- Functions: return type on separate line
+- Opening brace on same line for control flow, new line for functions
+- No C++ style comments in pure C
+
+## Emacs Lisp
+- use-package for package configuration
+- lexical-binding in all files
+- Prefer built-in functions over external packages
+- Hook functions named: `my/<mode>-hook`
+
+## JavaScript/TypeScript
+- async/await over .then() chains
+- Destructuring for function params when >2 properties
+- Arrow functions for callbacks, named functions for exports
+- ESM imports, never CommonJS require()

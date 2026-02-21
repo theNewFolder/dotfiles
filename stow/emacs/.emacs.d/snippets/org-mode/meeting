@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: Meeting note
+# key: meet
+# --
+* Meeting: $1
+  :PROPERTIES:
+  :DATE: `(format-time-string "%Y-%m-%d")`
+  :ATTENDEES: $2
+  :END:
+
+** Agenda
+$3
+
+** Notes
+$0
+
+** Action Items
+- [ ]

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v curl >/dev/null 2>&1; then
+  exit 0
+fi
+
+# Compact weather string from wttr.in, timeout kept short for bar responsiveness.
+weather="$(curl -fsS --max-time 2 'https://wttr.in/?format=%t+%C' 2>/dev/null || true)"
+[ -n "${weather}" ] || exit 0
+printf "WTH %s" "${weather}"

@@ -1,0 +1,47 @@
+# Zathura — Gruvbox Baby Ultra-Dark
+# DankMono Nerd Font | recolor for dark reading
+
+set font "DankMono Nerd Font 12"
+set default-bg "#0d0e0f"
+set default-fg "#ebdbb2"
+
+set statusbar-bg "#282828"
+set statusbar-fg "#ebdbb2"
+set inputbar-bg "#282828"
+set inputbar-fg "#ebdbb2"
+
+set notification-bg "#282828"
+set notification-fg "#ebdbb2"
+set notification-error-bg "#cc241d"
+set notification-error-fg "#ebdbb2"
+set notification-warning-bg "#d79921"
+set notification-warning-fg "#0d0e0f"
+
+set completion-bg "#282828"
+set completion-fg "#ebdbb2"
+set completion-group-bg "#3c3836"
+set completion-group-fg "#83a598"
+set completion-highlight-bg "#504945"
+set completion-highlight-fg "#fbf1c7"
+
+set index-bg "#0d0e0f"
+set index-fg "#ebdbb2"
+set index-active-bg "#504945"
+set index-active-fg "#fbf1c7"
+
+set render-loading-bg "#0d0e0f"
+set render-loading-fg "#ebdbb2"
+
+set highlight-color "#fabd2f"
+set highlight-active-color "#fe8019"
+
+set recolor true
+set recolor-darkcolor "#ebdbb2"
+set recolor-lightcolor "#0d0e0f"
+set recolor-keephue true
+
+set selection-clipboard clipboard
+set adjust-open "best-fit"
+set pages-per-row 1
+set scroll-page-aware true
+set guioptions ""

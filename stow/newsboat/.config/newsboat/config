@@ -1,0 +1,50 @@
+# Newsboat — Gruvbox Baby colors
+# DankMono Nerd Font
+
+# ── Behavior ──────────────────────────────────────────────────────
+auto-reload yes
+reload-time 30
+reload-threads 4
+prepopulate-query-feeds yes
+cleanup-on-quit yes
+show-read-feeds no
+show-read-articles yes
+confirm-mark-feed-list-read no
+text-width 80
+
+browser "qutebrowser %u"
+player "mpv"
+
+# ── Key bindings (vim-like) ───────────────────────────────────────
+bind-key j down
+bind-key k up
+bind-key j next articlelist
+bind-key k prev articlelist
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key G end
+bind-key g home
+bind-key l open
+bind-key h quit
+bind-key a toggle-article-read
+bind-key n next-unread
+bind-key N prev-unread
+bind-key U show-urls
+
+# ── Format ────────────────────────────────────────────────────────
+articlelist-format "%4i %f %D  %?T?|%-17T|  ?%t"
+feedlist-format "%4i %n %11u %t"
+datetime-format "%b %d"
+
+# ── Gruvbox Baby Colors ──────────────────────────────────────────
+color background          color223   default
+color listnormal          color223   default
+color listnormal_unread   color142   default  bold
+color listfocus           color223   color237 bold
+color listfocus_unread    color142   color237 bold
+color info                color248   color237
+color article             color223   default
+
+highlight article "^(Feed|Title|Author|Link|Date):.*" color208 default bold
+highlight article "https?://[^ ]+" color109 default underline
+highlight article "\\[image\\ [0-9]+\\]" color109 default bold

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec emacs --fg-daemon 2>&1

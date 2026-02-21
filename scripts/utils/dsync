@@ -1,0 +1,47 @@
+#!/bin/sh
+# dsync — Dotfiles Sync: stage, commit, push in one flow
+DOTFILES="$HOME/dotfiles"
+
+cd "$DOTFILES" || exit 1
+
+# Show current status
+echo "── dotfiles status ──"
+git -C "$DOTFILES" diff --stat
+echo ""
+git -C "$DOTFILES" status -s
+echo ""
+
+# Nothing to do?
+if git -C "$DOTFILES" diff --quiet && [ -z "$(git -C "$DOTFILES" status -s)" ]; then
+  echo "Nothing to sync."
+  exit 0
+fi
+
+# Stage interactively via fzf
+echo "Select files to stage (TAB to multi-select, enter to confirm):"
+files=$(git -C "$DOTFILES" status -s |
+  fzf --multi --prompt="stage> " \
+    --preview='
+      file=$(echo {} | awk "{print \$2}")
+      git -C '"$DOTFILES"' diff --color=always -- "$file" 2>/dev/null || bat --color=always '"$DOTFILES"'/"$file" 2>/dev/null
+    ' \
+    --preview-window=right:60% |
+  awk '{print $2}')
+
+[ -z "$files" ] && echo "Nothing staged." && exit 0
+
+echo "$files" | xargs git -C "$DOTFILES" add
+
+# Commit with message
+msg=$(printf "" | dmenu -p "commit msg:")
+[ -z "$msg" ] && msg="dotfiles sync $(date '+%Y-%m-%d %H:%M')"
+
+git -C "$DOTFILES" commit -m "$msg"
+
+# Push
+printf "Push to remote? [y/N] "
+read -r answer
+case "$answer" in
+  y|Y) git -C "$DOTFILES" push && herbe "Dotfiles pushed" 2>/dev/null & ;;
+  *)   echo "Committed locally. Run 'git -C ~/dotfiles push' later." ;;
+esac

@@ -1,0 +1,54 @@
+" ── Tridactyl — Gruvbox qutebrowser-style ──────────
+
+" Reset to defaults
+sanitise tridactyllocal tridactylsync
+
+" ── Search engines (match qutebrowser) ──────────────
+set searchengine perplexity
+set searchurls.perplexity https://www.perplexity.ai/search?q=%s
+set searchurls.g https://www.google.com/search?q=%s
+set searchurls.dd https://duckduckgo.com/?q=%s
+set searchurls.gh https://github.com/search?q=%s
+set searchurls.yt https://www.youtube.com/results?search_query=%s
+set searchurls.aw https://wiki.archlinux.org/index.php?search=%s
+set searchurls.wp https://en.wikipedia.org/w/index.php?search=%s
+set searchurls.vw https://man.voidlinux.org/?q=%s
+set searchurls.pkg https://voidlinux.org/packages/?arch=x86_64&q=%s
+
+" ── Tab navigation (match qutebrowser J/K) ──────────
+bind J tabprev
+bind K tabnext
+
+" ── Hints (home row) ────────────────────────────────
+set hintchars asdfghjkl
+set hintfiltermode vimperator-reflow
+set hintdelay 100
+
+" ── External editor (emacsclient) ───────────────────
+set editorcmd emacsclient -c -a '' %f
+
+" ── Smooth scrolling ────────────────────────────────
+set smoothscroll true
+
+" ── Dark mode ───────────────────────────────────────
+colors dark
+
+" ── Custom bindings (match qutebrowser ,prefix) ─────
+" Open in mpv
+bind ,m composite get_current_url | exclaim_quiet mpv --force-window=immediate
+bind ,M hint -W exclaim_quiet mpv --force-window=immediate
+
+" Toggle reader mode
+bind ,r reader
+
+" Yank URL (qutebrowser style)
+bind yy clipboard yank
+
+" ── Blacklist sites where Tridactyl interferes ──────
+blacklistadd mail.google.com
+blacklistadd docs.google.com
+blacklistadd discord.com
+
+" ── New tab focus ───────────────────────────────────
+set newtab about:blank
+set browser.startup.homepage file:///home/dev/dotfiles/stow/qutebrowser/.config/qutebrowser/startpage/index.html

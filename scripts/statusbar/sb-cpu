@@ -1,0 +1,14 @@
+#!/bin/sh
+# CPU usage — status2d red (#fb4934)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send " CPU hogs" "$(ps axch -o cmd,%cpu | awk '{cmd[$1]+=$2} END {for (i in cmd) print i, cmd[i]}' | sort -nrk2 | head)" ;;
+	2) setsid -f "$TERMINAL" -e htop ;;
+	3) notify-send " CPU" "Click: show hogs\nMiddle: htop" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+cpu=$(awk '/^cpu /{u=$2+$4; t=$2+$4+$5; if(NR>1) printf "%.0f", (u-ou)*100/(t-ot); ou=u; ot=t}' <(cat /proc/stat; sleep 0.5; cat /proc/stat))
+printf "^c#fb4934^ %s%%^d^" "$cpu"

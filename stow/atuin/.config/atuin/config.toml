@@ -1,0 +1,5 @@
+[style]
+compact = true
+
+[colors]
+selected_highlight = { foreground = "#282828", background = "#fabd2f" }

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# LARBS-style keyboard behavior tuned for this setup.
+xset r rate 300 50
+setxkbmap -layout us -option caps:super,altwin:menu_win,compose:ralt
+
+if command -v xcape >/dev/null 2>&1; then
+  pkill -x xcape 2>/dev/null || true
+  xcape -e "Super_L=Escape"
+fi
+
+if command -v xdotool >/dev/null 2>&1; then
+  if xset -q | grep -q "Caps Lock:[[:space:]]*on"; then
+    xdotool key Caps_Lock
+  fi
+fi

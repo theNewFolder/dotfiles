@@ -1,0 +1,27 @@
+#!/bin/sh
+# Volume — status2d aqua (#8ec07c)
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) setsid -w -f "$TERMINAL" -e pulsemixer; pkill -RTMIN+10 "${STATUSBAR:-dwmblocks}" ;;
+	2) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -RTMIN+10 "${STATUSBAR:-dwmblocks}" ;;
+	4) wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+; pkill -RTMIN+10 "${STATUSBAR:-dwmblocks}" ;;
+	5) wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-; pkill -RTMIN+10 "${STATUSBAR:-dwmblocks}" ;;
+	3) notify-send "󰕾 Volume" "Click: pulsemixer\nMiddle: mute\nScroll: adjust" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+vol="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
+
+# If muted
+[ "$vol" != "${vol%\[MUTED\]}" ] && printf "^c#928374^󰖁 Mute^d^" && exit
+
+vol="${vol#Volume: }"
+vol="$(printf "%.0f" "$(echo "$vol" | tr -d '.' | sed 's/^0*//')")"
+
+if [ "${vol:-0}" -eq 0 ]; then
+	printf "^c#928374^󰖁 0%%^d^"
+else
+	printf "^c#8ec07c^󰕾 %s%%^d^" "$vol"
+fi

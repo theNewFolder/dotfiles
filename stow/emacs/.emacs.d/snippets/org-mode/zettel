@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Zettel note
+# key: zet
+# --
+#+title: $1
+#+date: `(format-time-string "%Y-%m-%d")`
+#+filetags: :draft:
+
+* $1
+
+$0
+
+* References
+
+* Related

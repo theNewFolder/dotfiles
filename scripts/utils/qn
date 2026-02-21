@@ -1,0 +1,10 @@
+#!/bin/sh
+# qn — Quick Note: dmenu prompt → timestamped note
+NOTES="$HOME/notes.md"
+
+note=$(dmenu -p "note:" < /dev/null)
+[ -z "$note" ] && exit 0
+
+timestamp=$(date '+%Y-%m-%d %H:%M')
+echo "- [$timestamp] $note" >> "$NOTES"
+herbe "Note saved" 2>/dev/null &

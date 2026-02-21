@@ -1,0 +1,27 @@
+#!/bin/sh
+# pj — Project Jumper: fzf+zoxide fuzzy project finder
+# Lists ~/repos/*, ~/dotfiles, and zoxide frecency dirs
+
+REPOS_DIR="$HOME/repos"
+
+# Combine: repo dirs + dotfiles + top zoxide entries
+{
+  [ -d "$REPOS_DIR" ] && find "$REPOS_DIR" -maxdepth 1 -mindepth 1 -type d
+  echo "$HOME/dotfiles"
+  zoxide query -l 2>/dev/null | head -20
+} | sort -u | fzf \
+  --prompt="project> " \
+  --preview='
+    dir={}
+    echo "── $(basename {}) ──"
+    if [ -d "{}/.git" ]; then
+      git -C {} log --oneline -5 2>/dev/null
+      echo ""
+      git -C {} status -sb 2>/dev/null
+    fi
+    echo ""
+    eza --icons=auto -1 --group-directories-first {} 2>/dev/null | head -20
+  ' \
+  --preview-window=right:50% \
+  --bind='enter:accept' \
+  | read -r dir && [ -n "$dir" ] && cd "$dir" && exec "$SHELL"

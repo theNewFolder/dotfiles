@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Originally by Andr3as07 <https://github.com/Andr3as07>
+# Some changes by Luke
+# Rebuild by Tenyun
+
+# This block displays the number running background tasks.  Requires tsp.
+
+if command -v tsp >/dev/null 2>&1; then
+	num="$(tsp -l | awk -v numr=0 -v numq=0 '{if (/running/)numr++; if (/queued/)numq++} END{print numr+numq"("numq")"}')"
+else
+	num=""
+fi
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+# Handle mouse clicks
+case "$btn" in
+	1)
+		if command -v tsp >/dev/null 2>&1; then
+			setsid -f "$TERMINAL" -e tsp -l
+		else
+			notify-send "Task spooler" "tsp is not installed."
+		fi
+		;;
+	2)
+		if command -v tsp >/dev/null 2>&1; then
+			notify-send "Task spooler queue" "$(tsp -l 2>/dev/null | sed -n '1,15p')"
+		else
+			notify-send "Task spooler" "tsp is not installed."
+		fi
+		;;
+	3) notify-send "Tasks module" "🤖: number of running/queued background tasks
+- Left click opens tsp
+- Middle click previews queue" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+if [ -n "$num" ] && [ "$num" != "0(0)" ]; then
+	echo "🤖$num"
+fi

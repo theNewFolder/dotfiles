@@ -1,0 +1,24 @@
+#!/bin/sh
+# xfzf — XBPS package browser with fzf
+# Enter=install, ctrl-r=remove, ctrl-i=info
+
+query="${1:-}"
+
+xbps-query -Rs "${query:-.}" 2>/dev/null |
+  fzf --prompt="xbps> " \
+    --preview='
+      pkg=$(echo {} | awk "{print \$2}" | sed "s/-[0-9].*//")
+      xbps-query -S "$pkg" 2>/dev/null || xbps-query -RS "$pkg" 2>/dev/null
+    ' \
+    --preview-window=right:50% \
+    --header='enter=install / ctrl-r=remove / ctrl-i=info' \
+    --bind='ctrl-r:execute(
+      pkg=$(echo {} | awk "{print \$2}" | sed "s/-[0-9].*//")
+      echo "Removing $pkg..." && sudo xbps-remove -R "$pkg"
+      read -r _
+    )' \
+    --bind='enter:execute(
+      pkg=$(echo {} | awk "{print \$2}" | sed "s/-[0-9].*//")
+      echo "Installing $pkg..." && sudo xbps-install -Sy "$pkg"
+      read -r _
+    )'

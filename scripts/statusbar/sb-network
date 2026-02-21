@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if ip route | grep -q "^default"; then
+  iface=$(ip route | awk '/^default/{print $5; exit}')
+  printf "NET %s" "$iface"
+else
+  printf "NET down"
+fi

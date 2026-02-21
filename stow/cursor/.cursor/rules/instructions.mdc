@@ -1,0 +1,50 @@
+---
+description: Global coding standards and preferences for all projects
+globs:
+alwaysApply: true
+---
+
+# Coding Standards
+
+## Philosophy
+- Suckless: minimal, simple, frugal. No bloat.
+- DRY, YAGNI, KISS. Three similar lines > premature abstraction.
+- Each function does one thing well.
+- Delete dead code. No backwards-compat shims.
+
+## Style
+- Lowercase with dashes for directories (e.g., `auth-handler/`)
+- Favor named exports
+- 2 spaces indent (JS/TS/Lua/YAML), 4 spaces (Python/C), tabs (Go/Makefile)
+- Max line length: 100 chars soft, 120 hard
+- No trailing whitespace, final newline always
+
+## Error Handling
+- Early returns for error cases at function start
+- Raise errors explicitly — never silently swallow
+- No fallbacks unless explicitly requested
+- Validate at system boundaries only (user input, external APIs)
+
+## Type Safety
+- Use TypeScript strict mode when applicable
+- Prefer interfaces over types, const objects over enums
+- No `any` — use `unknown` and narrow
+
+## Testing
+- TDD: write failing test first, then minimal implementation
+- Test behavior, not implementation details
+- Name tests: `should_<expected>_when_<condition>`
+
+## Environment
+- OS: Void Linux (glibc), X11, dwm
+- Terminal: kitty, shell: zsh
+- Editors: Emacs (straight.el) + Neovim + Cursor
+- Font: DankMono Nerd Font
+- Theme: Gruvbox Dark Hard (#0d0e0f ultra-dark bg)
+
+## NEVER
+- Add comments explaining obvious code
+- Create README/docs files unless requested
+- Use `console.log` for error handling
+- Leave TODO comments without filing an issue
+- Import entire libraries when only one function is needed

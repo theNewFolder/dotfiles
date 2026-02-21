@@ -1,0 +1,33 @@
+#!/bin/sh
+# Battery — status2d green (#b8bb26), dynamic color by level
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+case "$btn" in
+	1) notify-send "󰁹 Battery" "$(cat /sys/class/power_supply/BAT0/uevent 2>/dev/null | head -10)" ;;
+	3) notify-send "󰁹 Battery" "Click: details\nScroll: brightness" ;;
+	4) brightnessctl set 5%+ >/dev/null 2>&1 ;;
+	5) brightnessctl set 5%- >/dev/null 2>&1 ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+for battery in /sys/class/power_supply/BAT?*; do
+	[ -n "${capacity+x}" ] && printf " "
+	capacity="$(cat "$battery/capacity" 2>&1)"
+	status="$(cat "$battery/status" 2>&1)"
+
+	case "$status" in
+		"Full"|"Charging") icon="󰂄"; col="#b8bb26" ;;
+		*)
+			if [ "$capacity" -gt 80 ]; then icon="󰁹"; col="#b8bb26"
+			elif [ "$capacity" -gt 60 ]; then icon="󰂀"; col="#8ec07c"
+			elif [ "$capacity" -gt 40 ]; then icon="󰁾"; col="#fabd2f"
+			elif [ "$capacity" -gt 20 ]; then icon="󰁻"; col="#fe8019"
+			else icon="󰁺"; col="#fb4934"
+			fi ;;
+	esac
+
+	[ "$capacity" -le 15 ] && [ "$status" = "Discharging" ] && warn="!"
+	printf "^c%s^%s%s%d%%^d^" "$col" "$icon" "${warn}" "$capacity"
+	unset warn
+done

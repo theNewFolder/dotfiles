@@ -1,0 +1,60 @@
+#!/bin/sh
+# gfi — Git Fzf Interactive: fzf-powered git workflows
+# Usage: gfi [branch|log|stash|diff|status]
+
+die() { echo "gfi: $1" >&2; exit 1; }
+command -v git >/dev/null || die "git not found"
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "not a git repo"
+
+case "${1:-menu}" in
+  branch)
+    git branch -a --color=always | grep -v '/HEAD' |
+      fzf --ansi --prompt="branch> " \
+        --preview='git log --oneline --graph --color=always {1} | head -30' \
+        --preview-window=right:50% |
+      sed 's/^[* ]*//' | sed 's|remotes/origin/||' |
+      xargs -r git checkout
+    ;;
+  log)
+    git log --oneline --graph --color=always --all |
+      fzf --ansi --no-sort --prompt="commit> " \
+        --preview='echo {} | grep -o "[a-f0-9]\{7,\}" | head -1 | xargs git show --color=always | head -80' \
+        --preview-window=right:60% |
+      grep -o "[a-f0-9]\{7,\}" | head -1
+    ;;
+  stash)
+    git stash list --color=always |
+      fzf --ansi --prompt="stash> " \
+        --preview='echo {} | cut -d: -f1 | xargs git stash show -p --color=always | head -80' \
+        --preview-window=right:60% \
+        --bind='ctrl-a:execute(echo {} | cut -d: -f1 | xargs git stash apply)+abort' \
+        --bind='ctrl-d:execute(echo {} | cut -d: -f1 | xargs git stash drop)+abort' \
+        --header='enter=show / ctrl-a=apply / ctrl-d=drop'
+    ;;
+  diff)
+    git diff --name-only |
+      fzf --prompt="diff> " \
+        --preview='git diff --color=always {} | head -100' \
+        --preview-window=right:65% \
+        --bind='enter:execute(git diff --color=always {} | less -R)'
+    ;;
+  status)
+    git status -s |
+      fzf --prompt="status> " \
+        --preview='
+          file=$(echo {} | awk "{print \$2}")
+          if git diff --quiet -- "$file" 2>/dev/null; then
+            bat --color=always "$file" 2>/dev/null || cat "$file"
+          else
+            git diff --color=always -- "$file"
+          fi
+        ' \
+        --preview-window=right:60% \
+        --bind='ctrl-a:execute(echo {} | awk "{print \$2}" | xargs git add)+reload(git status -s)' \
+        --header='ctrl-a=stage'
+    ;;
+  menu|*)
+    choice=$(printf "branch\nlog\nstash\ndiff\nstatus" | fzf --prompt="gfi> " --height=10)
+    [ -n "$choice" ] && exec "$0" "$choice"
+    ;;
+esac

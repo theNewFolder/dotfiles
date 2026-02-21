@@ -1,0 +1,21 @@
+#!/bin/sh
+# ss — Screenshot: maim + xclip, saves + copies to clipboard
+# Usage: ss [full|win|sel]  (default: sel)
+
+DIR="$HOME/Pictures/screenshots"
+mkdir -p "$DIR"
+FILE="$DIR/$(date '+%Y%m%d-%H%M%S').png"
+
+case "${1:-sel}" in
+  full) maim "$FILE" ;;
+  win)  maim -i "$(xdotool getactivewindow)" "$FILE" ;;
+  sel)  maim -s "$FILE" ;;
+  *)    echo "Usage: ss [full|win|sel]"; exit 1 ;;
+esac
+
+if [ -f "$FILE" ]; then
+  xclip -selection clipboard -t image/png < "$FILE"
+  herbe "Screenshot saved" 2>/dev/null &
+else
+  herbe "Screenshot cancelled" 2>/dev/null &
+fi

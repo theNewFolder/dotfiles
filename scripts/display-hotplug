@@ -1,0 +1,58 @@
+#!/bin/sh
+# display-hotplug — auto-switch between laptop and external HiDPI display
+# ThinkPad T490 + BenQ RD280UA (DP-1: 3240x2160@60Hz)
+
+INTERNAL="eDP-1"
+EXTERNAL="DP-1"
+EXT_MODE="3240x2160"
+EXT_RATE="59.99"
+EXT_DPI=144
+INT_DPI=120
+WALLPAPER="$HOME/Pictures/wallpapers/gruvbox/a_logo_of_mountains_and_sun.png"
+
+# When called from udev, we need X session context
+if [ -z "$DISPLAY" ]; then
+    export DISPLAY=":0"
+fi
+if [ -z "$XAUTHORITY" ]; then
+    export XAUTHORITY="$HOME/.Xauthority"
+fi
+
+# Small delay for xrandr to register the hotplug
+sleep 1
+
+connected=$(xrandr | grep "^${EXTERNAL} connected")
+
+if [ -n "$connected" ]; then
+    # External display connected: use it as sole output at HiDPI
+    xrandr \
+        --output "$EXTERNAL" --mode "$EXT_MODE" --rate "$EXT_RATE" --primary \
+        --output "$INTERNAL" --off
+
+    DPI=$EXT_DPI
+else
+    # External disconnected: fall back to laptop
+    xrandr \
+        --output "$INTERNAL" --auto --primary \
+        --output "$EXTERNAL" --off
+
+    DPI=$INT_DPI
+fi
+
+# Update DPI globally
+echo "Xft.dpi: $DPI" | xrdb -merge
+
+# Re-set wallpaper for new resolution
+if [ -f "$WALLPAPER" ]; then
+    feh --bg-fill "$WALLPAPER"
+elif [ -f "$HOME/.fehbg" ]; then
+    . "$HOME/.fehbg"
+fi
+
+# Restart dunst to pick up new DPI
+killall dunst 2>/dev/null
+dunst &
+
+# Restart dwmblocks for bar refresh
+killall dwmblocks 2>/dev/null
+dwmblocks &

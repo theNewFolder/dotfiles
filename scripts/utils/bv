@@ -1,0 +1,37 @@
+#!/bin/sh
+# bv — Brightness/Volume control with herbe notification
+# Usage: bv vol+|vol-|mute|br+|br-
+
+notify() { pkill herbe 2>/dev/null; herbe "$1" 2>/dev/null & }
+
+case "${1:-}" in
+  vol+)
+    amixer -q set Master 5%+
+    vol=$(amixer get Master | grep -oP '\d+%' | head -1)
+    notify "Vol $vol"
+    ;;
+  vol-)
+    amixer -q set Master 5%-
+    vol=$(amixer get Master | grep -oP '\d+%' | head -1)
+    notify "Vol $vol"
+    ;;
+  mute)
+    amixer -q set Master toggle
+    state=$(amixer get Master | grep -oP '\[o[nf]+\]' | head -1)
+    notify "Vol $state"
+    ;;
+  br+)
+    brightnessctl -q set +5%
+    br=$(brightnessctl -m | cut -d, -f4)
+    notify "Brightness $br"
+    ;;
+  br-)
+    brightnessctl -q set 5%-
+    br=$(brightnessctl -m | cut -d, -f4)
+    notify "Brightness $br"
+    ;;
+  *)
+    echo "Usage: bv vol+|vol-|mute|br+|br-"
+    exit 1
+    ;;
+esac

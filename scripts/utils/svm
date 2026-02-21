@@ -1,0 +1,21 @@
+#!/bin/sh
+# svm — Service Manager: fzf wrapper for runit sv
+# Shows all services, fzf to pick, actions via keybindings
+
+list_services() {
+  for svc in /var/service/*/; do
+    name=$(basename "$svc")
+    status=$(sudo sv status "$svc" 2>/dev/null | head -1)
+    printf "%-20s %s\n" "$name" "$status"
+  done
+}
+
+list_services |
+  fzf --prompt="service> " \
+    --header='enter=restart / ctrl-s=start / ctrl-x=stop / ctrl-l=log' \
+    --preview='sudo sv status /var/service/{1} 2>/dev/null' \
+    --preview-window=right:40% \
+    --bind='enter:execute(sudo sv restart /var/service/{1} && echo "Restarted {1}" && sleep 1)+reload('"$0"' --list)' \
+    --bind='ctrl-s:execute(sudo sv start /var/service/{1} && echo "Started {1}" && sleep 1)+reload('"$0"' --list)' \
+    --bind='ctrl-x:execute(sudo sv stop /var/service/{1} && echo "Stopped {1}" && sleep 1)+reload('"$0"' --list)' \
+    --bind="ctrl-l:execute(sudo tail -50 /var/log/{1}/current 2>/dev/null | less)"

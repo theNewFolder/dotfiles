@@ -1,0 +1,50 @@
+! Repo-guided Xresources (Gruvbox Dark + vibrant accents)
+Xft.dpi:       96
+Xft.antialias: true
+Xft.hinting:   true
+Xft.hintstyle: hintslight
+Xft.rgba:      rgb
+Xft.lcdfilter: lcddefault
+Xft.autohint:  0
+
+#define gruvbg    #282828
+#define gruvbg1   #3c3836
+#define gruvbg2   #504945
+#define gruvfg    #ebdbb2
+#define gruvfg4   #a89984
+#define gruvred   #cc241d
+#define gruvred1  #fb4934
+#define gruvgreen #98971a
+#define gruvgreen1 #b8bb26
+#define gruvyellow #d79921
+#define gruvyellow1 #fabd2f
+#define gruvblue  #458588
+#define gruvblue1 #83a598
+#define gruvpurple #b16286
+#define gruvpurple1 #d3869b
+#define gruvaqua  #689d6a
+#define gruvaqua1 #8ec07c
+#define gruvorange1 #fe8019
+#define gruvgray  #928374
+
+*background:  gruvbg
+*foreground:  gruvfg
+*cursorColor: gruvorange1
+*borderColor: gruvbg1
+
+*color0:  gruvbg
+*color1:  gruvred
+*color2:  gruvgreen
+*color3:  gruvyellow
+*color4:  gruvblue
+*color5:  gruvpurple
+*color6:  gruvaqua
+*color7:  gruvfg4
+*color8:  gruvgray
+*color9:  gruvred1
+*color10: gruvgreen1
+*color11: gruvyellow1
+*color12: gruvblue1
+*color13: gruvpurple1
+*color14: gruvaqua1
+*color15: gruvfg

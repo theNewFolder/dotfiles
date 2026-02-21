@@ -1,0 +1,23 @@
+#!/bin/sh
+# org-capture — Capture current page to Emacs org-mode via org-protocol
+# Usage: bind in qutebrowser config.py:
+#   config.bind(',c', 'spawn --userscript org-capture')
+#   config.bind(',C', 'spawn --userscript org-capture web')
+
+TEMPLATE="${1:-i}"
+TITLE="$QUTE_TITLE"
+URL="$QUTE_URL"
+BODY="$QUTE_SELECTED_TEXT"
+
+# URL-encode
+encode() {
+    python3 -c "import urllib.parse; print(urllib.parse.quote('''$1''', safe=''))"
+}
+
+ENC_TITLE=$(encode "$TITLE")
+ENC_URL=$(encode "$URL")
+ENC_BODY=$(encode "$BODY")
+
+emacsclient -n "org-protocol://capture?template=${TEMPLATE}&url=${ENC_URL}&title=${ENC_TITLE}&body=${ENC_BODY}" \
+    && echo "message-info 'Captured: ${TITLE}'" >> "$QUTE_FIFO" \
+    || echo "message-error 'Capture failed — is Emacs running?'" >> "$QUTE_FIFO"

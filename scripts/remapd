@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Re-apply keyboard remaps when new USB input devices appear.
+while :; do
+  "$HOME/dotfiles/scripts/remaps"
+  udevadm monitor -u -t seat -s input -s usb \
+    | grep -m1 -E "[^un]bind.+/[^:]+\\(usb\\)" >/dev/null
+done

@@ -1,0 +1,13 @@
+set previewer ~/.config/lf/preview
+set icons true
+set hidden true
+set ignorecase true
+set drawbox true
+
+map <enter> open
+map D delete
+map x cut
+map y copy
+map p paste
+map R reload
+map . set hidden!

@@ -1,0 +1,24 @@
+dwm patches:
+- cfacts + vanitygaps
+- pertag_with_sel
+- autostart
+- hide_vacant_tags
+- actualfullscreen
+- movestack
+- barpadding
+- statuscmd (with barpadding compat)
+- status2d
+- alpha + fixborders
+
+status:
+- dwmblocks (6 rainbow blocks, clickable)
+
+launcher:
+- dmenu
+
+terminal:
+- kitty primary
+- st fallback
+
+browser:
+- qutebrowser

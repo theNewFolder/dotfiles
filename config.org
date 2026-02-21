@@ -1,0 +1,734 @@
+#+TITLE: dotfiles - Void Linux + dwm + Emacs
+#+AUTHOR: theNewFolder
+#+DESCRIPTION: Literate source of truth for the T490 productivity stack
+#+PROPERTY: header-args :mkdirp yes :comments no
+#+STARTUP: overview
+
+* Locked profile
+
+- Distro: Void Linux
+- WM scope: strict =dwm= on X11
+- Patch budget: 5 patches only
+- Selected patches: =pertag=, =actualfullscreen=, =autostart=, =restartsig=, =swallow=
+- Status bar: =dwmblocks= (clickable)
+- Launcher: =dmenu= only
+- Terminal strategy: =st= primary + =kitty= fallback
+- Emacs profile: vanilla =use-package= stack
+- Power profile: battery-first, ThinkPad thresholds 75/85
+- Theme: Gruvbox Dark Hard + vibrant accents
+
+* X11 session
+
+** Xresources
+:PROPERTIES:
+:HEADER-ARGS: :tangle Xresources/.Xresources
+:END:
+
+#+begin_src conf
+! Repo-guided Xresources (Gruvbox Dark + vibrant accents)
+Xft.dpi:       96
+Xft.antialias: false
+Xft.hinting:   true
+Xft.hintstyle: hintslight
+Xft.rgba:      rgb
+
+#define gruvbg    #282828
+#define gruvbg1   #3c3836
+#define gruvbg2   #504945
+#define gruvfg    #ebdbb2
+#define gruvfg4   #a89984
+#define gruvred   #cc241d
+#define gruvred1  #fb4934
+#define gruvgreen #98971a
+#define gruvgreen1 #b8bb26
+#define gruvyellow #d79921
+#define gruvyellow1 #fabd2f
+#define gruvblue  #458588
+#define gruvblue1 #83a598
+#define gruvpurple #b16286
+#define gruvpurple1 #d3869b
+#define gruvaqua  #689d6a
+#define gruvaqua1 #8ec07c
+#define gruvorange1 #fe8019
+#define gruvgray  #928374
+
+*background:  gruvbg
+*foreground:  gruvfg
+*cursorColor: gruvorange1
+*borderColor: gruvbg1
+
+*color0:  gruvbg
+*color1:  gruvred
+*color2:  gruvgreen
+*color3:  gruvyellow
+*color4:  gruvblue
+*color5:  gruvpurple
+*color6:  gruvaqua
+*color7:  gruvfg4
+*color8:  gruvgray
+*color9:  gruvred1
+*color10: gruvgreen1
+*color11: gruvyellow1
+*color12: gruvblue1
+*color13: gruvpurple1
+*color14: gruvaqua1
+*color15: gruvfg
+#+end_src
+
+** xinitrc
+:PROPERTIES:
+:HEADER-ARGS: :tangle xinitrc/.xinitrc
+:END:
+
+#+begin_src sh
+#!/bin/sh
+[ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources"
+
+# T490 startup profile
+setxkbmap -layout us -option compose:ralt &
+export PATH="$HOME/.local/bin/statusbar:$HOME/dotfiles/scripts/statusbar:$PATH"
+
+# Touchpad + mouse defaults
+xinput --list --name-only | grep -i touchpad | while read -r dev; do
+  xinput set-prop "$dev" "libinput Tapping Enabled" 1 2>/dev/null || true
+  xinput set-prop "$dev" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
+done &
+
+xinput --list --name-only | grep -i mouse | while read -r dev; do
+  xinput set-prop "$dev" "libinput Accel Profile Enabled" 0 1 2>/dev/null || true
+done &
+
+command -v clipmenud >/dev/null && clipmenud &
+command -v dunst >/dev/null && dunst &
+command -v emacs >/dev/null && emacs --daemon &
+command -v dwmblocks >/dev/null && dwmblocks &
+
+command -v picom >/dev/null && picom --backend glx --vsync --no-fading-openclose \
+  --inactive-opacity 1.0 --active-opacity 1.0 -b
+
+if [ -f "$HOME/.fehbg" ]; then
+  . "$HOME/.fehbg"
+elif [ -d "$HOME/wallpapers" ]; then
+  wall=$(find "$HOME/wallpapers" -type f \( -name "*.jpg" -o -name "*.png" \) | shuf -n 1)
+  [ -n "$wall" ] && feh --bg-fill "$wall"
+fi
+
+exec dwm
+#+end_src
+
+* Emacs (vanilla + use-package)
+
+** early-init.el
+:PROPERTIES:
+:HEADER-ARGS: :tangle emacs/early-init.el
+:END:
+
+#+begin_src emacs-lisp
+;;; early-init.el -*- lexical-binding: t -*-
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6
+      package-enable-at-startup nil)
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+(push '(horizontal-scroll-bars) default-frame-alist)
+(push '(background-color . "#282828") default-frame-alist)
+(push '(foreground-color . "#ebdbb2") default-frame-alist)
+(push '(cursor-color . "#fe8019") default-frame-alist)
+(setq native-comp-async-report-warnings-errors 'silent)
+#+end_src
+
+** init.el
+:PROPERTIES:
+:HEADER-ARGS: :tangle emacs/init.el
+:END:
+
+#+begin_src emacs-lisp
+;;; init.el -*- lexical-binding: t -*-
+
+;; straight.el bootstrap
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t
+      use-package-always-defer t)
+
+;; Performance baseline
+(setq read-process-output-max (* 4 1024 1024))
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 32 1024 1024)
+                  gc-cons-percentage 0.1)))
+
+(use-package gcmh
+  :demand t
+  :config
+  (gcmh-mode 1)
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold (* 64 1024 1024)))
+
+;; Core defaults
+(use-package emacs
+  :straight (:type built-in)
+  :demand t
+  :init
+  (setq inhibit-startup-message t
+        initial-scratch-message nil
+        ring-bell-function 'ignore
+        use-short-answers t
+        make-backup-files nil
+        auto-save-default nil
+        create-lockfiles nil
+        use-dialog-box nil
+        scroll-margin 8
+        scroll-conservatively 101
+        scroll-preserve-screen-position t)
+  :config
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (global-display-line-numbers-mode 1)
+  (setq display-line-numbers-type 'relative)
+  (column-number-mode 1)
+  (global-auto-revert-mode 1)
+  (set-face-attribute 'default nil :family "Terminus" :height 140))
+
+;; Theme
+(use-package gruvbox-theme
+  :demand t
+  :config (load-theme 'gruvbox-dark-hard t))
+
+;; Evil
+(use-package evil
+  :demand t
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding nil
+        evil-want-C-u-scroll t
+        evil-split-window-below t
+        evil-vsplit-window-right t)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :demand t
+  :config
+  (evil-collection-init))
+
+;; Completion stack
+(use-package vertico :demand t :init (vertico-mode))
+(use-package orderless :demand t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+(use-package marginalia :demand t :init (marginalia-mode))
+(use-package consult
+  :demand t
+  :bind (("C-s" . consult-line)
+         ("C-x b" . consult-buffer)
+         ("M-s r" . consult-ripgrep)
+         ("M-g g" . consult-goto-line)))
+(use-package corfu
+  :demand t
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
+  :init
+  (global-corfu-mode))
+
+;; Discoverability
+(use-package which-key
+  :demand t
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 0.3))
+
+;; Org
+(use-package org
+  :straight (:type built-in)
+  :hook (org-mode . visual-line-mode)
+  :config
+  (setq org-directory "~/org"
+        org-default-notes-file "~/org/inbox.org"
+        org-agenda-files '("~/org/inbox.org" "~/org/todo.org" "~/org/projects.org")
+        org-log-done 'time
+        org-return-follows-link t
+        org-confirm-babel-evaluate nil))
+
+(use-package org-modern
+  :hook (org-mode . org-modern-mode))
+
+(use-package org-roam
+  :custom
+  (org-roam-directory "~/org/roam")
+  (org-roam-database-connector 'sqlite-builtin)
+  :bind (("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture))
+  :config
+  (org-roam-db-autosync-mode 1))
+
+;; Daemon-first workflow
+(use-package server
+  :straight (:type built-in)
+  :config
+  (unless (server-running-p)
+    (server-start)))
+#+end_src
+
+* Suckless patch contract
+
+** patch-profile.txt
+:PROPERTIES:
+:HEADER-ARGS: :tangle suckless/patch-profile.txt
+:END:
+
+#+begin_src text
+dwm patches:
+- vanitygaps
+- pertag
+- attachbelow
+- systray
+- statuscmd
+- hide_vacant_tags
+- actualfullscreen
+- autostart
+- restartsig
+- swallow
+- movestack
+
+status:
+- dwmblocks (clickable modules)
+
+launcher:
+- dmenu only
+
+terminal:
+- st primary
+- kitty fallback
+#+end_src
+
+* Suckless runtime files
+
+** dwm config.h
+:PROPERTIES:
+:HEADER-ARGS: :tangle suckless/dwm/config.h
+:END:
+
+#+begin_src c
+/* theNewFolder dwm config — Gruvbox Dark + Terminus + dwmblocks
+ * Hardware: ThinkPad T490 — i5-8365U, Intel UHD 620
+ * Patches: vanitygaps, pertag, attachbelow, autostart, swallow,
+ *          systray, statuscmd, hide_vacant_tags, restartsig,
+ *          actualfullscreen, movestack
+ */
+#include <X11/XF86keysym.h>
+
+/* ── Gruvbox Dark palette ─────────────────────────────────────── */
+static const char gruvbg[]      = "#282828";
+static const char gruvbg1[]     = "#3c3836";
+static const char gruvbg2[]     = "#504945";
+static const char gruvbg3[]     = "#665c54";
+static const char gruvfg[]      = "#ebdbb2";
+static const char gruvfg4[]     = "#a89984";
+static const char gruvgray[]    = "#928374";
+static const char gruvred[]     = "#cc241d";
+static const char gruvred1[]    = "#fb4934";
+static const char gruvgreen[]   = "#98971a";
+static const char gruvgreen1[]  = "#b8bb26";
+static const char gruvyellow[]  = "#d79921";
+static const char gruvyellow1[] = "#fabd2f";
+static const char gruvblue[]    = "#458588";
+static const char gruvblue1[]   = "#83a598";
+static const char gruvpurple[]  = "#b16286";
+static const char gruvaqua[]    = "#689d6a";
+static const char gruvaqua1[]   = "#8ec07c";
+static const char gruvorange[]  = "#d65d0e";
+static const char gruvorange1[] = "#fe8019";
+
+/* ── Appearance ───────────────────────────────────────────────── */
+static const unsigned int borderpx       = 2;   /* border pixel of windows */
+static const unsigned int snap           = 32;  /* snap pixel */
+static const int showbar                 = 1;   /* 0 = no bar */
+static const int topbar                  = 1;   /* 0 = bottom bar */
+
+/* vanitygaps */
+static const unsigned int gappih        = 8;   /* horiz inner gap */
+static const unsigned int gappiv        = 8;   /* vert inner gap */
+static const unsigned int gappoh        = 8;   /* horiz outer gap */
+static const unsigned int gappov        = 8;   /* vert outer gap */
+static const int smartgaps              = 1;   /* no outer gap with 1 window */
+
+/* systray */
+static const unsigned int systraypinning     = 0;  /* 0: sloppy systray */
+static const unsigned int systrayonleft      = 0;  /* 0: right of status */
+static const unsigned int systrayspacing     = 2;  /* systray spacing px */
+static const int systraypinningfailfirst     = 1;
+static const int showsystray                 = 1;
+
+/* ── Font (Terminus bitmap, pixelsize 14, no antialiasing) ──── */
+static const char *fonts[] = {
+    "Terminus:pixelsize=14:antialias=false:autohint=false",
+    "Symbols Nerd Font:pixelsize=14:antialias=false"
+};
+static const char dmenufont[] = "Terminus:pixelsize=14:antialias=false";
+
+/* ── Colors ───────────────────────────────────────────────────── */
+static const char *colors[][3] = {
+    /*                  fg           bg          border      */
+    [SchemeNorm]  = { gruvfg4,     gruvbg,     gruvbg2     },
+    [SchemeSel]   = { gruvfg,      gruvbg1,    gruvorange1 },
+    [SchemeUrg]   = { gruvfg,      gruvred,    gruvred1    },
+};
+
+/* ── Tags ─────────────────────────────────────────────────────── */
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+/* ── Rules ────────────────────────────────────────────────────── */
+static const Rule rules[] = {
+    /* xprop: WM_CLASS(STRING) = instance, class */
+    /* class            instance  title      tags   float  term  noswallow  monitor */
+    { "Firefox",        NULL,     NULL,      1<<1,  0,     0,    -1,        -1 },
+    { "zen-browser",    NULL,     NULL,      1<<1,  0,     0,    -1,        -1 },
+    { "Emacs",          NULL,     NULL,      1<<2,  0,     0,    -1,        -1 },
+    { "st",             NULL,     NULL,      0,     0,     1,     1,        -1 },
+    { "kitty",          NULL,     NULL,      0,     0,     1,     1,        -1 },
+    { "st",             NULL,     "ranger",  1<<5,  0,     0,    -1,        -1 },
+    { "st",             NULL,     "ncmpcpp", 1<<7,  0,     0,    -1,        -1 },
+    { "discord",        NULL,     NULL,      1<<6,  0,     0,    -1,        -1 },
+    { "mpv",            NULL,     NULL,      1<<4,  0,     0,    -1,        -1 },
+    { NULL,    NULL, "Event Tester", 0,      0,     0,     1,        -1 },
+};
+
+/* ── Layouts ──────────────────────────────────────────────────── */
+static const float mfact        = 0.55; /* master area factor */
+static const int nmaster        = 1;    /* windows in master */
+static const int resizehints    = 0;    /* 0: ignore size hints → no gaps */
+static const int lockfullscreen = 1;
+
+static const Layout layouts[] = {
+    { "[]=",  tile    },   /* default: tiling */
+    { "><>",  NULL    },   /* floating */
+    { "[M]",  monocle },   /* monocle */
+};
+
+/* ── Modifier key: Super (Win) ────────────────────────────────── */
+#define MODKEY Mod4Mask
+#define TAGKEYS(KEY, TAG) \
+    { MODKEY,                       KEY, view,       {.ui = 1 << TAG} }, \
+    { MODKEY|ControlMask,           KEY, toggleview, {.ui = 1 << TAG} }, \
+    { MODKEY|ShiftMask,             KEY, tag,        {.ui = 1 << TAG} }, \
+    { MODKEY|ControlMask|ShiftMask, KEY, toggletag,  {.ui = 1 << TAG} },
+
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+
+/* ── Commands ─────────────────────────────────────────────────── */
+static char dmenumon[2] = "0";
+static const char *dmenucmd[] = {
+    "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
+    "-nb", gruvbg, "-nf", gruvfg4,
+    "-sb", gruvbg1, "-sf", gruvfg,
+    NULL
+};
+static const char *termcmd[]  = { "kitty", NULL };
+static const char *stcmd[]    = { "st", NULL };
+static const char *emacscmd[] = { "emacsclient", "-c", "-a", "emacs", NULL };
+static const char *rangercmd[] = { "kitty", "-e", "ranger", NULL };
+static const char *lockcmd[]   = { "slock", NULL };
+static const char *scrotcmd[]  = { "scrot", "-s", "/tmp/shot_%Y%m%d_%H%M%S.png", NULL };
+
+/* volume (amixer) */
+static const char *volupcmd[]  = { "amixer", "-q", "set", "Master", "5%+", "unmute", NULL };
+static const char *voldncmd[]  = { "amixer", "-q", "set", "Master", "5%-", "unmute", NULL };
+static const char *mutecmd[]   = { "amixer", "-q", "set", "Master", "toggle", NULL };
+
+/* brightness (brightnessctl) */
+static const char *britupcmd[] = { "brightnessctl", "set", "5%+", NULL };
+static const char *britdncmd[] = { "brightnessctl", "set", "5%-", NULL };
+
+/* mpd / mpc */
+static const char *mpctoggle[] = { "mpc", "toggle", NULL };
+static const char *mpcnext[]   = { "mpc", "next",   NULL };
+static const char *mpcprev[]   = { "mpc", "prev",   NULL };
+
+/* ── Keybindings ──────────────────────────────────────────────── */
+static const Key keys[] = {
+    /* modifier                  key             function        argument */
+    /* ── Launch ──────────────────────────────────────────────── */
+    { MODKEY,                    XK_p,           spawn,          {.v = dmenucmd} },
+    { MODKEY,                    XK_Return,      spawn,          {.v = termcmd}  },
+    { MODKEY|ShiftMask,          XK_Return,      spawn,          {.v = stcmd}    },
+    { MODKEY,                    XK_e,           spawn,          {.v = emacscmd} },
+    { MODKEY,                    XK_r,           spawn,          {.v = rangercmd}},
+    { MODKEY|ShiftMask,          XK_l,           spawn,          {.v = lockcmd}  },
+    { MODKEY|ShiftMask,          XK_s,           spawn,          {.v = scrotcmd} },
+
+    /* ── Media / Volume ───────────────────────────────────────── */
+    { 0, XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd}  },
+    { 0, XF86XK_AudioLowerVolume, spawn, {.v = voldncmd}  },
+    { 0, XF86XK_AudioMute,        spawn, {.v = mutecmd}   },
+    { 0, XF86XK_MonBrightnessUp,  spawn, {.v = britupcmd} },
+    { 0, XF86XK_MonBrightnessDown,spawn, {.v = britdncmd} },
+    { 0, XF86XK_AudioPlay,        spawn, {.v = mpctoggle} },
+    { 0, XF86XK_AudioNext,        spawn, {.v = mpcnext}   },
+    { 0, XF86XK_AudioPrev,        spawn, {.v = mpcprev}   },
+
+    /* ── Layout / Window ──────────────────────────────────────── */
+    { MODKEY,                    XK_b,           togglebar,      {0} },
+    { MODKEY,                    XK_j,           focusstack,     {.i = +1} },
+    { MODKEY,                    XK_k,           focusstack,     {.i = -1} },
+    { MODKEY|ShiftMask,          XK_j,           movestack,      {.i = +1} },  /* movestack */
+    { MODKEY|ShiftMask,          XK_k,           movestack,      {.i = -1} },  /* movestack */
+    { MODKEY,                    XK_i,           incnmaster,     {.i = +1} },
+    { MODKEY,                    XK_d,           incnmaster,     {.i = -1} },
+    { MODKEY,                    XK_h,           setmfact,       {.f = -0.05} },
+    { MODKEY,                    XK_l,           setmfact,       {.f = +0.05} },
+    { MODKEY|ShiftMask,          XK_h,           setcfact,       {.f = +0.25} }, /* cfacts */
+    { MODKEY|ShiftMask,          XK_l,           setcfact,       {.f = -0.25} }, /* cfacts */
+    { MODKEY|ShiftMask,          XK_o,           setcfact,       {.f =  0.00} }, /* cfacts reset */
+    { MODKEY,                    XK_z,           zoom,           {0} },
+    { MODKEY,                    XK_Tab,         view,           {0} },
+    { MODKEY|ShiftMask,          XK_c,           killclient,     {0} },
+    { MODKEY,                    XK_t,           setlayout,      {.v = &layouts[0]} },
+    { MODKEY,                    XK_f,           setlayout,      {.v = &layouts[1]} },
+    { MODKEY,                    XK_m,           setlayout,      {.v = &layouts[2]} },
+    { MODKEY,                    XK_space,       setlayout,      {0} },
+    { MODKEY|ShiftMask,          XK_space,       togglefloating, {0} },
+    { MODKEY,                    XK_F11,         togglefullscr,  {0} }, /* actualfullscreen */
+    { MODKEY,                    XK_0,           view,           {.ui = ~0} },
+    { MODKEY|ShiftMask,          XK_0,           tag,            {.ui = ~0} },
+
+    /* ── Gaps (vanitygaps) ────────────────────────────────────── */
+    { MODKEY,                    XK_minus,       incrgaps,       {.i = -2} },
+    { MODKEY,                    XK_equal,       incrgaps,       {.i = +2} },
+    { MODKEY|ShiftMask,          XK_equal,       defaultgaps,    {0} },
+    { MODKEY|ShiftMask,          XK_minus,       togglegaps,     {0} },
+
+    /* ── Monitors ─────────────────────────────────────────────── */
+    { MODKEY,                    XK_comma,       focusmon,       {.i = -1} },
+    { MODKEY,                    XK_period,      focusmon,       {.i = +1} },
+    { MODKEY|ShiftMask,          XK_comma,       tagmon,         {.i = -1} },
+    { MODKEY|ShiftMask,          XK_period,      tagmon,         {.i = +1} },
+
+    /* ── Tags ─────────────────────────────────────────────────── */
+    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2)
+    TAGKEYS(XK_4, 3) TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5)
+    TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7) TAGKEYS(XK_9, 8)
+
+    /* ── Session ──────────────────────────────────────────────── */
+    { MODKEY|ShiftMask,          XK_q,           quit,           {0} },
+    { MODKEY|ControlMask,        XK_r,           quit,           {1} }, /* restartsig: restart */
+};
+
+/* ── Mouse Buttons ────────────────────────────────────────────── */
+static const Button buttons[] = {
+    /* click            mask      button    function        argument */
+    { ClkLtSymbol,      0,        Button1,  setlayout,      {0} },
+    { ClkLtSymbol,      0,        Button3,  setlayout,      {.v = &layouts[2]} },
+    { ClkWinTitle,      0,        Button2,  zoom,           {0} },
+    { ClkStatusText,    0,        Button1,  sigstatusbar,   {.i = 1} }, /* statuscmd */
+    { ClkStatusText,    0,        Button2,  sigstatusbar,   {.i = 2} }, /* statuscmd */
+    { ClkStatusText,    0,        Button3,  sigstatusbar,   {.i = 3} }, /* statuscmd */
+    { ClkClientWin,     MODKEY,   Button1,  movemouse,      {0} },
+    { ClkClientWin,     MODKEY,   Button2,  togglefloating, {0} },
+    { ClkClientWin,     MODKEY,   Button3,  resizemouse,    {0} },
+    { ClkTagBar,        0,        Button1,  view,           {0} },
+    { ClkTagBar,        0,        Button3,  toggleview,     {0} },
+    { ClkTagBar,        MODKEY,   Button1,  tag,            {0} },
+    { ClkTagBar,        MODKEY,   Button3,  toggletag,      {0} },
+};
+#+end_src
+
+** dmenu config.h
+:PROPERTIES:
+:HEADER-ARGS: :tangle suckless/dmenu/config.h
+:END:
+
+#+begin_src c
+/* dmenu topbar dense profile */
+static int topbar = 1;
+static const char *fonts[] = {
+  "Terminus:pixelsize=14:antialias=true:autohint=true"
+};
+static const char *prompt = NULL;
+static const char *colors[SchemeLast][2] = {
+  [SchemeNorm] = { "#a89984", "#1d2021" },
+  [SchemeSel]  = { "#ebdbb2", "#3c3836" },
+  [SchemeOut]  = { "#1d2021", "#fabd2f" },
+};
+static unsigned int lines = 0;
+static const char worddelimiters[] = " ";
+#+end_src
+
+** dwmblocks blocks.h
+:PROPERTIES:
+:HEADER-ARGS: :tangle suckless/dwmblocks/blocks.h
+:END:
+
+#+begin_src c
+/* signal-enabled modules */
+static const Block blocks[] = {
+  /* script       interval signal */
+  { "sb-volume",  5,       10 },
+  { "sb-cpu",     5,       0  },
+  { "sb-memory",  10,      0  },
+  { "sb-battery", 20,      0  },
+  { "sb-network", 10,      0  },
+  { "sb-temp",    10,      0  },
+  { "sb-date",    30,      0  },
+};
+
+static char delim[] = "  ";
+static unsigned int delimLen = 2;
+#+end_src
+
+** status scripts
+
+*** sb-volume
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-volume :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+vol=$(amixer get Master | awk -F'[][]' 'END{print $2}')
+state=$(amixer get Master | awk -F'[][]' 'END{print $4}')
+if [ "$state" = "off" ]; then
+  printf "MUTE %s" "$vol"
+else
+  printf "VOL %s" "$vol"
+fi
+#+end_src
+
+*** sb-cpu
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-cpu :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+read -r _ u1 n1 s1 i1 _ < /proc/stat
+sleep 1
+read -r _ u2 n2 s2 i2 _ < /proc/stat
+used=$(( (u2+n2+s2) - (u1+n1+s1) ))
+total=$(( (u2+n2+s2+i2) - (u1+n1+s1+i1) ))
+[ "$total" -eq 0 ] && exit 0
+printf "CPU %d%%" "$((100 * used / total))"
+#+end_src
+
+*** sb-memory
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-memory :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+total=0
+avail=0
+while IFS=: read -r key val; do
+  case "$key" in
+    MemTotal) total=${val%% kB} ;;
+    MemAvailable) avail=${val%% kB} ;;
+  esac
+done < /proc/meminfo
+used_mb=$(( (total - avail) / 1024 ))
+printf "MEM %dM" "$used_mb"
+#+end_src
+
+*** sb-battery
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-battery :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+bat=/sys/class/power_supply/BAT0
+[ -d "$bat" ] || exit 0
+cap=$(cat "$bat/capacity")
+stat=$(cat "$bat/status")
+printf "BAT %s%% %s" "$cap" "$stat"
+#+end_src
+
+*** sb-network
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-network :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+if ip route | grep -q "^default"; then
+  iface=$(ip route | awk '/^default/{print $5; exit}')
+  printf "NET %s" "$iface"
+else
+  printf "NET down"
+fi
+#+end_src
+
+*** sb-temp
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-temp :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+if [ -r /sys/class/thermal/thermal_zone0/temp ]; then
+  t=$(cat /sys/class/thermal/thermal_zone0/temp)
+  printf "TMP %sC" "$((t / 1000))"
+fi
+#+end_src
+
+*** sb-date
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/statusbar/sb-date :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+date '+%a %d %b %H:%M'
+#+end_src
+
+* Power audit helper
+
+** powertop-audit.sh
+:PROPERTIES:
+:HEADER-ARGS: :tangle scripts/powertop-audit.sh :shebang "#!/usr/bin/env bash"
+:END:
+
+#+begin_src sh
+set -euo pipefail
+printf 'o\n' | sudo -S powertop --calibrate
+printf 'o\n' | sudo -S powertop --html="$HOME/powertop-report.html"
+printf 'o\n' | sudo -S powertop --auto-tune-dump > "$HOME/powertop-auto-tune.txt"
+echo "Saved:"
+echo "  $HOME/powertop-report.html"
+echo "  $HOME/powertop-auto-tune.txt"
+#+end_src
+
+* Operational source map
+
+These files are intentionally maintained directly in the repo and treated as canonical operational sources.
+This section keeps =config.org= as the single navigation index for the complete setup.
+
+- =scripts/fetch-suckless-sources.sh= (rolling latest git sources + patch downloader)
+- =scripts/build-suckless-from-source.sh= (apply patch set + build/install + backup hook)
+- =scripts/bootstrap-void.sh= (Void bootstrap + services + zsh linking + optional XLibre)
+- =scripts/xlibre-migrate-void.sh= (aggressive migration path)
+- =scripts/xlibre-rollback-void.sh= (rollback/recovery path)
+- =scripts/build-emacs-git.sh= (latest-git Emacs source build with native-comp)
+- =zsh/.zshrc= (minimal fast modal shell profile)
+- =zsh/.zprofile= (login env + tty startx behavior)
+
+When any of the above files changes, update this section if ownership/intent changes.

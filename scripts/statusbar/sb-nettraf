@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Module showing network traffic. Shows how much data has been received (RX) or
+# transmitted (TX) since the previous time this script ran. So if run every
+# second, gives network traffic per second.
+
+btn="${BUTTON:-${BLOCK_BUTTON:-0}}"
+
+open_net_tool() {
+	if command -v bmon >/dev/null 2>&1; then
+		setsid -f "$TERMINAL" -e bmon
+	elif command -v nload >/dev/null 2>&1; then
+		setsid -f "$TERMINAL" -e nload
+	else
+		notify-send "Network traffic" "Install bmon or nload for live traffic view."
+	fi
+}
+
+case "$btn" in
+	1) open_net_tool ;;
+	2) setsid -f "$TERMINAL" -e nmtui ;;
+	3) notify-send "🌐 Network traffic module" "🔻: Traffic received
+🔺: Traffic transmitted
+- Left click opens traffic monitor
+- Middle click opens nmtui" ;;
+	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+update() {
+    sum=0
+    for arg; do
+        read -r i < "$arg"
+        sum=$(( sum + i ))
+    done
+    cache=/tmp/${1##*/}
+    [ -f "$cache" ] && read -r old < "$cache" || old=0
+    printf %d\\n "$sum" > "$cache"
+    printf %d\\n $(( sum - old ))
+}
+
+rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
+tx=$(update /sys/class/net/[ew]*/statistics/tx_bytes)
+
+printf "🔻%4sB 🔺%4sB\\n" $(numfmt --to=iec $rx $tx)
