@@ -4,6 +4,9 @@
 [ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources"
 export PATH="$HOME/dotfiles/scripts/statusbar:$HOME/dotfiles/scripts:$HOME/.local/bin/statusbar:$HOME/.local/bin:$PATH"
 export TERMINAL="${TERMINAL:-kitty}"
+
+# VA-API: use intel-media-driver (iHD) for Whiskey Lake VP9/AV1/H.264 decode
+export LIBVA_DRIVER_NAME=iHD
 export EDITOR="${EDITOR:-emacsclient -c -a emacs}"
 export BROWSER="${BROWSER:-firefox}"
 
@@ -21,6 +24,13 @@ done &
 xinput --list --name-only | grep -i mouse | while read -r dev; do
   xinput set-prop "$dev" "libinput Accel Profile Enabled" 0 1 2>/dev/null || true
 done &
+
+# GNOME Keyring — pick up daemon started by PAM (or start it); exports control vars
+# for all child processes (Firefox, VSCode, git-credential-helper, etc.)
+if command -v gnome-keyring-daemon >/dev/null; then
+    eval "$(gnome-keyring-daemon --start --components=secrets,pkcs11 2>/dev/null)"
+    export GNOME_KEYRING_CONTROL GNOME_KEYRING_PID
+fi
 
 # User runit services (ssh-agent, emacs, syncthing)
 export SVDIR="$HOME/.local/sv"
@@ -40,11 +50,13 @@ command -v dwmblocks >/dev/null && dwmblocks &
 
 # Compositor + wallpaper
 if command -v picom >/dev/null; then
-  PICOM_CONF="$HOME/dotfiles/picom.conf"
   if [ "${PICOM_BACKEND:-glx}" = "xrender" ] && [ -f "$HOME/dotfiles/picom-xrender.conf" ]; then
-    PICOM_CONF="$HOME/dotfiles/picom-xrender.conf"
+    picom --config "$HOME/dotfiles/picom-xrender.conf" -b
+  elif [ -f "$HOME/.config/picom/picom.conf" ]; then
+    picom --config "$HOME/.config/picom/picom.conf" -b
+  else
+    picom --config "$HOME/dotfiles/picom.conf" -b
   fi
-  picom --config "$PICOM_CONF" -b
 fi
 
 if [ -f "$HOME/.fehbg" ]; then

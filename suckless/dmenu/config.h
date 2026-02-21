@@ -1,7 +1,7 @@
 /* dmenu topbar eyecandy profile (Gruvbox Baby ultra-dark) */
 static int topbar = 1;
 static const char *fonts[] = {
-  "DankMono Nerd Font:size=24:antialias=true:autohint=false"
+  "DankMono Nerd Font:size=13:antialias=true:autohint=false"
 };
 static const char *prompt = NULL;
 static const char *colors[SchemeLast][2] = {

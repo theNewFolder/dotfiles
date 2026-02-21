@@ -1,8 +1,7 @@
 /* theNewFolder dwm config — Gruvbox Baby Ultra-Dark + DankMono + dwmblocks
  * Hardware: ThinkPad T490 — i5-8365U, Intel UHD 620
- * Latest-compatible patch set:
- * vanitygaps, pertag, autostart,
- * hide_vacant_tags, actualfullscreen, movestack
+ * Patch set: vanitygaps, pertag, autostart, hide_vacant_tags,
+ *            movestack, barpadding, statuscmd, status2d
  */
 #include <X11/XF86keysym.h>
 
@@ -36,8 +35,8 @@ static const unsigned int borderpx       = 2;   /* border pixel of windows */
 static const unsigned int snap           = 32;  /* snap pixel */
 static const int showbar                 = 1;   /* 0 = no bar */
 static const int topbar                  = 1;   /* 0 = bottom bar */
-static const int sidepad                 = 14;  /* horizontal bar padding */
-static const int vertpad                 = 10;  /* vertical bar padding */
+static const int sidepad                 = 8;   /* horizontal bar padding */
+static const int vertpad                 = 6;   /* vertical bar padding */
 static const int refreshrate             = 60;  /* used by pointer motion throttling */
 
 /* vanitygaps */
@@ -50,13 +49,9 @@ static const int smartgaps              = 1;   /* no outer gap with 1 window */
 
 /* ── Font ────────────────────────────────────────────────────── */
 static const char *fonts[] = {
-    "DankMono Nerd Font:size=24:antialias=true:autohint=false"
+    "DankMono Nerd Font:size=13:antialias=true:autohint=false"
 };
-static const char dmenufont[] = "DankMono Nerd Font:size=24:antialias=true:autohint=false";
-
-/* ── Alpha (requires alpha patch + picom) ────────────────────── */
-static unsigned int baralpha        = 0xcc;
-static unsigned int borderalpha     = OPAQUE;
+static const char dmenufont[] = "DankMono Nerd Font:size=13:antialias=true:autohint=false";
 
 /* ── Colors ───────────────────────────────────────────────────── */
 static const char *colors[][3] = {
@@ -134,7 +129,7 @@ static const char *scrotcmd[]   = { "scrot", "-s", "/tmp/shot_%Y%m%d_%H%M%S.png"
 /* volume (wpctl/pipewire) + signal dwmblocks (10 + 34 = 44) */
 static const char *volupcmd[] = {
     "sh", "-c",
-    "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
+    "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+; kill -44 $(pidof dwmblocks) 2>/dev/null || true",
     NULL
 };
 static const char *voldncmd[] = {
@@ -258,7 +253,7 @@ static const Key keys[] = {
     { MODKEY,                    XK_space,       zoom,           {0} },
     { MODKEY|ShiftMask,          XK_space,       togglefloating, {0} },
     { MODKEY,                    XK_Tab,         view,           {0} },
-    { MODKEY,                    XK_F11,         togglefullscr,  {0} }, /* actualfullscreen */
+    { MODKEY,                    XK_F11,         togglebar,      {0} }, /* toggle bar (actualfullscreen removed) */
     { MODKEY,                    XK_0,           view,           {.ui = ~0} },
     { MODKEY|ShiftMask,          XK_0,           tag,            {.ui = ~0} },
 

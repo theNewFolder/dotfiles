@@ -73,10 +73,9 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#504945'
 
-# fzf
+# fzf (key-bindings + completion cover everything; skip redundant fzf --zsh fork)
 source_if_exists /usr/share/fzf/key-bindings.zsh
 source_if_exists /usr/share/fzf/completion.zsh
-[[ $- == *i* ]] && source <(fzf --zsh 2>/dev/null) 2>/dev/null
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git 2>/dev/null || find . -type f'
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --color=bg+:#3c3836,bg:#282828,spinner:#fabd2f,hl:#d3869b --color=fg:#ebdbb2,header:#83a598,info:#fabd2f,pointer:#fabd2f --color=marker:#fe8019,fg+:#ebdbb2,prompt:#fabd2f,hl+:#d3869b'
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :200 {} 2>/dev/null || ls -la {}' --bind 'ctrl-/:toggle-preview'"
@@ -85,8 +84,8 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --level=1 --icons=auto {} 2>/dev/nu
 # fzf-git (CTRL-G prefix bindings for branches, commits, tags, etc.)
 source_if_exists "$HOME/.local/bin/fzf-git.sh"
 
-# zoxide
-command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
+# zoxide (static init — regenerate with: zoxide init zsh > ~/.local/share/zoxide-init.zsh)
+source_if_exists "$HOME/.local/share/zoxide-init.zsh"
 
 # Environment
 export EDITOR='emacsclient -t -a emacs'

@@ -1,0 +1,77 @@
+diff --git a/drw.c b/drw.c
+--- a/drw.c
++++ b/drw.c
+@@ -170,11 +170,11 @@ drw_fontset_free(Fnt *font)
+ }
+
+ void
+-drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
++drw_clr_create(Drw *drw, Clr *dest, const char *clrname, unsigned int alpha)
+ {
+ 	if (!drw || !dest || !clrname)
+ 		return;
+
+-	if (!XftColorAllocName(drw->dpy, DefaultVisual(drw->dpy, drw->screen),
+-	                       DefaultColormap(drw->dpy, drw->screen),
++	if (!XftColorAllocName(drw->dpy, drw->visual, drw->cmap,
+ 	                       clrname, dest))
+ 		die("error, cannot allocate color '%s'", clrname);
++	dest->pixel = (dest->pixel & 0x00ffffffU) | (alpha << 24);
+ }
+
+@@ -183,7 +183,7 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
+ /* Create color schemes. */
+ Clr *
+-drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
++drw_scm_create(Drw *drw, const char *clrnames[], const unsigned int clralphas[], size_t clrcount)
+ {
+ 	size_t i;
+ 	Clr *ret;
+@@ -193,7 +193,7 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
+ 		return NULL;
+
+ 	for (i = 0; i < clrcount; i++)
+-		drw_clr_create(drw, &ret[i], clrnames[i]);
++		drw_clr_create(drw, &ret[i], clrnames[i], clralphas[i]);
+ 	return ret;
+ }
+diff --git a/drw.h b/drw.h
+--- a/drw.h
++++ b/drw.h
+@@ -44,8 +44,8 @@ void drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned in
+
+ /* Colorscheme abstraction */
+-void drw_clr_create(Drw *drw, Clr *dest, const char *clrname);
++void drw_clr_create(Drw *drw, Clr *dest, const char *clrname, unsigned int alpha);
+ void drw_clr_free(Drw *drw, Clr *c);
+-Clr *drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount);
++Clr *drw_scm_create(Drw *drw, const char *clrnames[], const unsigned int clralphas[], size_t clrcount);
+ void drw_scm_free(Drw *drw, Clr *scm, size_t clrcount);
+
+diff --git a/dwm.c b/dwm.c
+--- a/dwm.c
++++ b/dwm.c
+@@ -2047,16 +2047,18 @@ updatebars(void)
+ {
+ 	Monitor *m;
+ 	XSetWindowAttributes wa = {
+ 		.override_redirect = True,
+-		.background_pixmap = ParentRelative,
++		.background_pixel = 0,
++		.border_pixel = 0,
++		.colormap = cmap,
+ 		.event_mask = ButtonPressMask|ExposureMask
+ 	};
+ 	XClassHint ch = {"dwm", "dwm"};
+ 	for (m = mons; m; m = m->next) {
+ 		if (m->barwin)
+ 			continue;
+-		m->barwin = XCreateWindow(dpy, root, m->wx + sp, m->by + vp, m->ww - 2 * sp, bh, 0, DefaultDepth(dpy, screen),
+-				CopyFromParent, DefaultVisual(dpy, screen),
+-				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
++		m->barwin = XCreateWindow(dpy, root, m->wx + sp, m->by + vp, m->ww - 2 * sp, bh, 0, depth,
++				InputOutput, visual,
++				CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask, &wa);
+ 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
+ 		XMapRaised(dpy, m->barwin);
+ 		XSetClassHint(dpy, m->barwin, &ch);
