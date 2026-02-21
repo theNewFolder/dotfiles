@@ -58,6 +58,12 @@ prepare_dwm() {
         dwm-statuscmd-20260124-a9aa0d8.diff)
           echo "warn: ${p} had known partial rejects (continuing with compat patch)" >&2
           ;;
+        dwm-alpha-20250918-74edc27.diff)
+          echo "warn: ${p} had known partial rejects (applying fixups)" >&2
+          ;;
+        dwm-status2d-barpadding-20241018-44e9799.diff)
+          echo "warn: ${p} had known partial rejects (continuing with compat)" >&2
+          ;;
         *)
           echo "error: failed to apply ${p}" >&2
           exit 1
@@ -67,6 +73,44 @@ prepare_dwm() {
   done
 
   patch -d "${dir}" -p1 < "${PATCH_ROOT}/dwm-statuscmd-barpadding-compat.diff"
+
+  # Fix rejected alpha-patch hunks directly (drw.c, drw.h, dwm.c)
+  echo "  applying alpha compat fixups..."
+
+  # drw.h: add alpha param to declarations
+  sed -i 's/^void drw_clr_create(Drw \*drw, Clr \*dest, const char \*clrname);$/void drw_clr_create(Drw *drw, Clr *dest, const char *clrname, unsigned int alpha);/' "${dir}/drw.h"
+  sed -i 's/^Clr \*drw_scm_create(Drw \*drw, const char \*clrnames\[\], size_t clrcount);$/Clr *drw_scm_create(Drw *drw, const char *clrnames[], const unsigned int clralphas[], size_t clrcount);/' "${dir}/drw.h"
+
+  # drw.c: add alpha param to drw_clr_create
+  sed -i 's/^drw_clr_create(Drw \*drw, Clr \*dest, const char \*clrname)$/drw_clr_create(Drw *drw, Clr *dest, const char *clrname, unsigned int alpha)/' "${dir}/drw.c"
+  # Only fix the XftColorAllocName call (not XftColorFree)
+  sed -i '/XftColorAllocName/{
+    s/DefaultVisual(drw->dpy, drw->screen),/drw->visual, drw->cmap,/
+    n
+    /DefaultColormap/d
+  }' "${dir}/drw.c"
+  sed -i "/die(\"error, cannot allocate color/a\\	dest->pixel = (dest->pixel \& 0x00ffffffU) | (alpha << 24);" "${dir}/drw.c"
+
+  # drw.c: fix drw_clr_free to use alpha-aware visual/cmap
+  sed -i '/XftColorFree/{
+    s/DefaultVisual(drw->dpy, drw->screen),$/drw->visual, drw->cmap, c);/
+    n
+    /DefaultColormap/d
+  }' "${dir}/drw.c"
+
+  # drw.c: add alpha param to drw_scm_create
+  sed -i 's/^drw_scm_create(Drw \*drw, const char \*clrnames\[\], size_t clrcount)$/drw_scm_create(Drw *drw, const char *clrnames[], const unsigned int clralphas[], size_t clrcount)/' "${dir}/drw.c"
+  sed -i 's/drw_clr_create(drw, \&ret\[i\], clrnames\[i\]);/drw_clr_create(drw, \&ret[i], clrnames[i], clralphas[i]);/' "${dir}/drw.c"
+
+  # dwm.c: fix status2d drawstatusbar calls to include alpha parameter
+  sed -i 's/drw_clr_create(drw, &drw->scheme\[ColFg\], buf)/drw_clr_create(drw, \&drw->scheme[ColFg], buf, 0xffU)/' "${dir}/dwm.c"
+  sed -i 's/drw_clr_create(drw, &drw->scheme\[ColBg\], buf)/drw_clr_create(drw, \&drw->scheme[ColBg], buf, 0xffU)/' "${dir}/dwm.c"
+
+  # dwm.c: fix updatebars for alpha (barpadding-aware version)
+  sed -i 's/\.background_pixmap = ParentRelative,/.background_pixel = 0,\n\t\t.border_pixel = 0,\n\t\t.colormap = cmap,/' "${dir}/dwm.c"
+  sed -i 's/CWOverrideRedirect|CWBackPixmap|CWEventMask/CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask/' "${dir}/dwm.c"
+  sed -i '/XCreateWindow.*barwin.*DefaultDepth/s/DefaultDepth(dpy, screen)/depth/' "${dir}/dwm.c"
+  sed -i '/XCreateWindow.*barwin/s/CopyFromParent, DefaultVisual(dpy, screen)/InputOutput, visual/' "${dir}/dwm.c"
 
   cp "${ROOT}/suckless/dwm/config.h" "${dir}/config.h"
 }
