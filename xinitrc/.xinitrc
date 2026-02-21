@@ -5,6 +5,11 @@
 export PATH="$HOME/dotfiles/scripts/statusbar:$HOME/dotfiles/scripts:$HOME/.local/bin/statusbar:$HOME/.local/bin:$PATH"
 export TERMINAL="${TERMINAL:-kitty}"
 
+# D-Bus session bus — must start before gnome-keyring or any service that uses it
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
+
 # VA-API: use intel-media-driver (iHD) for Whiskey Lake VP9/AV1/H.264 decode
 export LIBVA_DRIVER_NAME=iHD
 export EDITOR="${EDITOR:-emacsclient -c -a emacs}"
