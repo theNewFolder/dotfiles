@@ -1,0 +1,4 @@
+#!/bin/sh
+# WirePlumber must start after PipeWire is ready
+sleep 1
+exec /usr/bin/wireplumber 2>&1

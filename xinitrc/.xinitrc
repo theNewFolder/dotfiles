@@ -41,6 +41,8 @@ fi
 export SVDIR="$HOME/.local/sv"
 export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
 mkdir -p "$SVDIR" "$HOME/.ssh"
+ln -sf "$HOME/dotfiles/runit/pipewire" "$SVDIR/" 2>/dev/null
+ln -sf "$HOME/dotfiles/runit/wireplumber" "$SVDIR/" 2>/dev/null
 ln -sf "$HOME/dotfiles/runit/ssh-agent" "$SVDIR/" 2>/dev/null
 ln -sf "$HOME/dotfiles/runit/emacs" "$SVDIR/" 2>/dev/null
 ln -sf "$HOME/dotfiles/runit/syncthing" "$SVDIR/" 2>/dev/null
