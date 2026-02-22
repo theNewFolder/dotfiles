@@ -9,6 +9,10 @@
 straight/
 eln-cache/
 
+# Runit supervise runtime state (changes every boot)
+runit/*/supervise/pid
+runit/*/supervise/status
+
 # System noise
 .DS_Store
 Thumbs.db
