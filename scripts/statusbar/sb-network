@@ -11,7 +11,7 @@ esac
 
 iface="$(ip route show default 2>/dev/null | awk '{print $5; exit}')"
 if [ -n "$iface" ]; then
-	printf "^c#83a598^󰛳 %s^d^" "$iface"
+	printf "^c#83a598^󰛳^d^"
 else
-	printf "^c#928374^󰲛 Down^d^"
+	printf "^c#928374^󰲛^d^"
 fi

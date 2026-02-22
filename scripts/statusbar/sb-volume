@@ -12,7 +12,7 @@ case "$btn" in
 	6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-vol="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)"
+vol="$(timeout 2 wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)"
 [ -z "$vol" ] && { printf "^c#928374^󰖁 --^d^"; exit 0; }
 
 # If muted
