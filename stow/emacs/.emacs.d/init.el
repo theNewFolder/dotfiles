@@ -65,7 +65,9 @@
   (setq display-line-numbers-type 'relative)
   (column-number-mode 1)
   (global-auto-revert-mode 1)
-  (set-face-attribute 'default nil :family "DankMono Nerd Font" :height 140))
+  (set-face-attribute 'default nil :family "DankMono Nerd Font" :height 140)
+  ;; Frame transparency — background only so text stays sharp (Emacs 29+)
+  (add-to-list 'default-frame-alist '(alpha-background . 92)))
 
 (use-package gruvbox-theme
   :demand t
@@ -838,3 +840,30 @@
   :straight (:type built-in)
   :config
   (unless (server-running-p) (server-start)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(warning-suppress-log-types '((emacs) (comp) (bytecomp))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-date ((t (:foreground "#83a598" :underline t))))
+ '(org-document-title ((t (:foreground "#fabd2f" :weight bold :height 1.5))))
+ '(org-done ((t (:foreground "#928374" :weight normal :strike-through t))))
+ '(org-headline-done ((t (:foreground "#928374" :strike-through t))))
+ '(org-level-1 ((t (:foreground "#fb4934" :weight bold :height 1.3))))
+ '(org-level-2 ((t (:foreground "#fabd2f" :weight bold :height 1.15))))
+ '(org-level-3 ((t (:foreground "#b8bb26" :weight bold :height 1.05))))
+ '(org-level-4 ((t (:foreground "#83a598" :weight semi-bold))))
+ '(org-level-5 ((t (:foreground "#8ec07c"))))
+ '(org-level-6 ((t (:foreground "#d3869b"))))
+ '(org-level-7 ((t (:foreground "#fe8019"))))
+ '(org-level-8 ((t (:foreground "#ebdbb2"))))
+ '(org-scheduled-today ((t (:foreground "#b8bb26"))))
+ '(org-table ((t (:foreground "#83a598"))))
+ '(org-tag ((t (:foreground "#928374" :weight bold :height 0.8))))
+ '(org-todo ((t (:foreground "#fb4934" :weight bold)))))
